@@ -1,0 +1,26 @@
+<template>
+  <div class="app-container">
+    <Header />
+    <div class="content">
+      <slot />
+    </div>
+    <Footer />
+  </div>
+</template>
+
+<script setup>
+import Header from '@/components/navigation/Header.vue'
+import Footer from '@/components/navigation/Footer.vue'
+</script>
+
+<style scoped>
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+</style>

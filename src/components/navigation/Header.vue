@@ -5,16 +5,23 @@
       <div class="title">
         <p class="title-1">ĐẠI HỌC BÁCH KHOA HÀ NỘI</p>
         <div class="divider"></div>
-        <p class="title-2">Hệ thống quản lý thực tập</p>
+        <p class="title-2">Hệ thống đăng ký và quản lý thực tập</p>
       </div>
     </div>
     <div class="menu">
-      <router-link to="/dang-ky-thuc-tap">
-        <p class="category">Đăng ký thực tập</p>
-      </router-link>
-      <router-link to="/danh-gia">
-        <p class="category">Đánh giá</p>
-      </router-link>
+      <div class="list-category">
+        <router-link to="/dang-ky-thuc-tap" class="link">
+          <p class="category">Đăng ký thực tập</p>
+        </router-link>
+        <router-link to="/danh-gia" class="link">
+          <p class="category">Đánh giá</p>
+        </router-link>
+      </div>
+
+      <div class="info">
+        <img src="/images/header/bell.svg" alt="bell" class="bell" />
+        <img src="/images/header/user.png" alt="user" class="user" />
+      </div>
     </div>
   </div>
 </template>
@@ -37,23 +44,51 @@
 
 .logo {
   width: 70px;
-  padding: 10px;
+  padding: 15px;
 }
 
 .menu {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  height: 5rem;
+}
+
+.list-category {
+  display: flex;
+  flex-direction: row;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.info {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bell {
+  margin-right: 10px;
+  height: 40px;
+}
+
+.user {
+  height: 50px;
+  margin-right: 20px;
 }
 
 .category {
   color: black;
-  font-size: 16px;
+  font-size: 18px;
   margin: 0 20px;
   padding: 10px;
   text-align: center;
   font-weight: bold;
-  text-decoration: none;
 }
 
 P {
@@ -63,6 +98,7 @@ P {
   padding: 0;
   text-align: center;
   line-height: 1.5;
+  text-align: start;
 }
 
 .divider {
@@ -74,9 +110,5 @@ P {
 
 .title-1 {
   font-weight: bold;
-}
-
-.title-2 {
-  text-align: start;
 }
 </style>

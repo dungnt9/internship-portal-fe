@@ -2,6 +2,4 @@
 
 <script setup></script>
 
-<style scoped>
-s
-</style>
+<style scoped></style>

@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="menu">
-      <div class="list-category">
+      <div v-if="!!authStore.token" class="list-category">
         <router-link to="/dang-ky-thuc-tap" class="link">
           <p class="category">Đăng ký thực tập</p>
         </router-link>
@@ -18,14 +18,23 @@
         </router-link>
       </div>
 
-      <div class="info">
+      <div v-if="!!authStore.token" class="info">
         <img src="/images/header/bell.svg" alt="bell" class="bell" />
         <img src="/images/header/user.png" alt="user" class="user" />
+      </div>
+      <div v-else class="info">
+        <router-link to="/dang-nhap" class="link">
+          <p class="category">Đăng nhập</p>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
+</script>
 <style scoped>
 .header-container {
   display: flex;

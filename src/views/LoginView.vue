@@ -149,7 +149,6 @@ const login = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .background {
@@ -173,7 +172,7 @@ const login = async () => {
   border-radius: 20px;
   min-width: 500px;
   height: auto;
-  padding: 10px;
+  padding: 20px;
 }
 
 .logo {

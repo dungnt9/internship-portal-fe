@@ -18,6 +18,18 @@ const router = createRouter({
       meta: { layout: 'default' },
     },
     {
+      path: '/dang-ky',
+      name: 'dang-ky',
+      component: () => import('../views/RegisterView.vue'),
+      meta: { layout: 'default' },
+    },
+    {
+      path: '/quen-mat-khau',
+      name: 'quen-mat-khau',
+      component: () => import('../views/ForgetPasswordView.vue'),
+      meta: { layout: 'default' },
+    },
+    {
       path: '/dang-ky-thuc-tap',
       name: 'dang-ky-thuc-tap',
       component: () => import('../views/RegistrationView.vue'),

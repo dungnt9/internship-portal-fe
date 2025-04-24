@@ -10,24 +10,26 @@ export const useAuthStore = defineStore(
   () => {
     const token = ref(null)
 
+    const isAuthenticated = computed(() => {
+      return Boolean(token.value) && token.value !== 'null' && token.value !== 'undefined'
+    })
+
     const clearAuth = () => {
       token.value = null
       Cookies.remove('token')
+      Cookies.remove('isAuthenticated')
     }
 
     const setToken = (value) => {
       if (value && value !== 'null' && value !== 'undefined') {
         token.value = value
-        Cookies.set('token', value)
-      } else {
-        clearAuth()
       }
     }
 
     const login = async (payload) => {
       try {
         const response = await apiLogin(payload)
-        console.log('Login response:', response.data)
+        console.log('Login response:', response.data.accessToken)
         setToken(response.data.accessToken)
         // const userStore = useUserStore()
         // await userStore.fetchUser(true)
@@ -46,6 +48,7 @@ export const useAuthStore = defineStore(
 
     return {
       token,
+      isAuthenticated,
       setToken,
       login,
       logout,

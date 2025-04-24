@@ -66,7 +66,10 @@
         </div>
 
         <button type="submit" class="login-button">
-          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Đăng nhập
+          <div class="button-content">
+            <span v-if="loading" class="spinner-border spinner-border-sm"></span>
+            <span v-else>Đăng nhập</span>
+          </div>
         </button>
       </form>
       <div class="forget-password">
@@ -83,7 +86,6 @@
 import { ref } from 'vue'
 import { validEmail, validPhone, emoji } from '@/utils/validators'
 import { useAuthStore } from '@/stores/authStore'
-import { useUserStore } from '@/stores/userStore'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -154,7 +156,6 @@ const login = async () => {
 .background {
   position: relative;
   height: 600px;
-  z-index: -1;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -221,7 +222,6 @@ const login = async () => {
   align-items: center;
   justify-content: center;
   padding: 0 10px;
-  z-index: 1;
   cursor: pointer;
 }
 

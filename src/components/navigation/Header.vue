@@ -1,6 +1,6 @@
 <template>
   <div class="header-container">
-    <div class="header-title">
+    <div class="header-title" @click="redirectHome">
       <img src="/images/logo/logo-hust.webp" alt="Logo" class="logo" />
       <div class="title">
         <p class="title-1">ĐẠI HỌC BÁCH KHOA HÀ NỘI</p>
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="menu">
-      <div v-if="!!authStore.token" class="list-category">
+      <div v-if="authStore.isAuthenticated" class="list-category">
         <router-link to="/dang-ky-thuc-tap" class="link">
           <p class="category">Đăng ký thực tập</p>
         </router-link>
@@ -18,9 +18,19 @@
         </router-link>
       </div>
 
-      <div v-if="!!authStore.token" class="info">
+      <div v-if="authStore.isAuthenticated" class="info">
         <img src="/images/header/bell.svg" alt="bell" class="bell" />
-        <img src="/images/header/user.png" alt="user" class="user" />
+        <div class="dropdown-container">
+          <img src="/images/header/user.png" alt="user" class="user" @click="toggleDropdown" />
+          <div v-if="isDropdownOpen" class="dropdown-wrapper">
+            <Dropdown
+              :items="[
+                { label: 'Thông tin cá nhân', route: '/thong-tin-ca-nhan' },
+                { label: 'Đăng xuất', action: handleShowLogoutModal },
+              ]"
+            />
+          </div>
+        </div>
       </div>
       <div v-else class="info">
         <router-link to="/dang-nhap" class="link">
@@ -29,11 +39,45 @@
       </div>
     </div>
   </div>
+  <Teleport to="body">
+    <div v-if="showLogoutModal">
+      <LogoutModal @confirm="handleLogout" @close="closeLogoutModal" />
+    </div>
+  </Teleport>
 </template>
 <script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
+import Dropdown from '../info/Ddropdown.vue'
+import LogoutModal from '../info/LogoutModal.vue'
 
 const authStore = useAuthStore()
+const isDropdownOpen = ref(false)
+const showLogoutModal = ref(false)
+const router = useRouter()
+
+const redirectHome = () => {
+  router.push('/')
+}
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value
+}
+
+const handleShowLogoutModal = () => {
+  showLogoutModal.value = true
+}
+
+const closeLogoutModal = () => {
+  showLogoutModal.value = false
+}
+
+const handleLogout = () => {
+  authStore.logout()
+  closeLogoutModal()
+  router.push('/')
+}
 </script>
 <style scoped>
 .header-container {
@@ -86,9 +130,21 @@ const authStore = useAuthStore()
   height: 40px;
 }
 
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-wrapper {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+}
+
 .user {
   height: 50px;
   margin-right: 20px;
+  cursor: pointer;
 }
 
 .category {

@@ -74,7 +74,6 @@ const send = async () => {
 .background {
   position: relative;
   height: 600px;
-  z-index: -1;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -130,18 +129,6 @@ const send = async () => {
   border: none;
   margin-bottom: 1rem;
   padding: 0 10px;
-}
-
-.view {
-  position: absolute;
-  right: 0;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px;
-  z-index: 1;
-  cursor: pointer;
 }
 
 .send-button {

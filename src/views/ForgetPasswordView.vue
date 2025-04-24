@@ -65,7 +65,7 @@ const send = async () => {
 
 <style scoped>
 .container {
-  margin: 1.5rem 0;
+  margin: 1.5rem auto;
   display: flex;
   align-items: center;
   justify-content: center;

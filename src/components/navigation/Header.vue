@@ -26,6 +26,7 @@
             <Dropdown
               :items="[
                 { label: 'Thông tin cá nhân', route: '/thong-tin-ca-nhan' },
+                { label: 'Đổi mật khẩu', route: '/doi-mat-khau' },
                 { label: 'Đăng xuất', action: handleShowLogoutModal },
               ]"
             />
@@ -34,7 +35,7 @@
       </div>
       <div v-else class="info">
         <router-link to="/dang-nhap" class="link">
-          <p class="category">Đăng nhập</p>
+          <p class="category login-btn">Đăng nhập</p>
         </router-link>
       </div>
     </div>
@@ -156,12 +157,29 @@ const handleLogout = () => {
   font-weight: bold;
 }
 
+.login-btn {
+  font-size: 18px;
+  margin: 0 20px;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 30px;
+  color: white;
+  background-color: #c02135;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+.login-btn:active {
+  transform: scale(0.9);
+}
+
 P {
   color: white;
   font-size: 16px;
   margin: 0;
   padding: 0;
-  text-align: center;
   line-height: 1.5;
   text-align: start;
 }

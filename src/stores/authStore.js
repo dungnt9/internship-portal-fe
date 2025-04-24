@@ -15,22 +15,14 @@ export const useAuthStore = defineStore(
     })
 
     const clearAuth = () => {
-      token.value = null
       Cookies.remove('token')
-      Cookies.remove('isAuthenticated')
-    }
-
-    const setToken = (value) => {
-      if (value && value !== 'null' && value !== 'undefined') {
-        token.value = value
-      }
     }
 
     const login = async (payload) => {
       try {
         const response = await apiLogin(payload)
-        console.log('Login response:', response.data.accessToken)
-        setToken(response.data.accessToken)
+        token.value = response.data.accessToken
+        Cookies.set('token', response.data.accessToken)
         // const userStore = useUserStore()
         // await userStore.fetchUser(true)
       } catch (error) {
@@ -41,15 +33,14 @@ export const useAuthStore = defineStore(
 
     const logout = () => {
       clearAuth()
-      const userStore = useUserStore()
-      userStore.clearUser()
+      // const userStore = useUserStore()
+      // userStore.clearUser()
       router.push('/dang-nhap')
     }
 
     return {
       token,
       isAuthenticated,
-      setToken,
       login,
       logout,
       clearAuth,

@@ -7,6 +7,20 @@ export default [
   {
     name: 'app/files-to-lint',
     files: ['**/*.{js,mjs,jsx,vue}'],
+    languageOptions: {
+      parser: 'vue-eslint-parser',
+      parserOptions: {
+        parser: '@babel/eslint-parser',
+        ecmaVersion: 2020,
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
   },
 
   {
@@ -14,15 +28,16 @@ export default [
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
 
+  js.configs.recommended,
+
   {
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
+    ...pluginVue.configs['flat/essential'][0],
+    rules: {
+      ...pluginVue.configs['flat/essential'][0].rules,
+      'vue/multi-word-component-names': 'off',
     },
   },
 
-  js.configs.recommended,
-  ...pluginVue.configs['flat/essential'],
   skipFormatting,
+  prettierConfig,
 ]

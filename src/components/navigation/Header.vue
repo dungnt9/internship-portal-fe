@@ -21,8 +21,8 @@
       <div v-if="authStore.isAuthenticated" class="info">
         <img src="/images/header/bell.svg" alt="bell" class="bell" />
         <div class="dropdown-container">
-          <img src="/images/header/user.png" alt="user" class="user" @click="toggleDropdown" />
-          <div v-if="isDropdownOpen" class="dropdown-wrapper">
+          <img src="/images/header/user.png" alt="user" class="user" />
+          <div class="dropdown-wrapper">
             <Dropdown
               :items="[
                 { label: 'Thông tin cá nhân', route: '/thong-tin-ca-nhan' },
@@ -54,16 +54,11 @@ import Dropdown from '../info/Ddropdown.vue'
 import LogoutModal from '../info/LogoutModal.vue'
 
 const authStore = useAuthStore()
-const isDropdownOpen = ref(false)
 const showLogoutModal = ref(false)
 const router = useRouter()
 
 const redirectHome = () => {
   router.push('/')
-}
-
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value
 }
 
 const handleShowLogoutModal = () => {
@@ -138,9 +133,25 @@ const handleLogout = () => {
 
 .dropdown-wrapper {
   position: absolute;
-  top: 100%;
   right: 0;
-  z-index: 10;
+  animation: dropdown 0.5s ease forwards;
+  padding-top: 10px;
+  display: none;
+}
+
+.dropdown-container:hover .dropdown-wrapper {
+  display: block;
+}
+
+@keyframes dropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .user {

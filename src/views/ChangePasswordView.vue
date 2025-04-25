@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="login-container">
-      <p class="text-center">Đổi mật khẩu</p>
+      <p class="text-center fw-bold title">Đổi mật khẩu</p>
       <div v-if="text_error" class="text-error">
         {{ text_error }}
       </div>
@@ -63,7 +63,7 @@
         <button type="submit" class="login-button">
           <div class="button-content">
             <span v-if="loading" class="spinner-border spinner-border-sm"></span>
-            <span v-else>Đổi mật khẩu</span>
+            <span v-else class="fw-bold">Đổi mật khẩu</span>
           </div>
         </button>
       </form>
@@ -167,6 +167,11 @@ const changePassword = async () => {
   box-shadow: 0px 10px 50px rgba(4, 54, 255, 0.1);
 }
 
+.title {
+  color: #c02135;
+  font-size: 1.5rem;
+}
+
 .text-error {
   color: red;
   margin-bottom: 1rem;
@@ -189,7 +194,6 @@ const changePassword = async () => {
   width: 100%;
   height: 40px;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
   padding: 0 40px 0 12px;
   font-size: 0.95rem;
   outline: none;

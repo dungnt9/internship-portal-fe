@@ -55,7 +55,7 @@
             placeholder="Mật khẩu"
             class="input-box"
           />
-          <div class="input-group-postpend view" @click="changeShowPassword">
+          <div class="input-group-postpend" @click="changeShowPassword">
             <span v-if="showpassword" :class="{ active: showpassword }">
               <img src="/images/login/eye.svg" alt="" />
             </span>
@@ -68,7 +68,7 @@
         <button type="submit" class="login-button">
           <div class="button-content">
             <span v-if="loading" class="spinner-border spinner-border-sm"></span>
-            <span v-else>Đăng nhập</span>
+            <span v-else class="fw-bold">Đăng nhập</span>
           </div>
         </button>
       </form>
@@ -211,6 +211,7 @@ const login = async () => {
   border: none;
   margin-bottom: 1rem;
   padding: 0 40px;
+  outline: none;
 }
 
 .input-box:focus {
@@ -218,15 +219,17 @@ const login = async () => {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.view {
+.input-group-postpend {
   position: absolute;
-  right: 0;
-  height: 100%;
+  right: 10px;
+  top: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
+  padding: 0 5px 15px 5px;
   cursor: pointer;
+  height: 100%;
 }
 
 .login-button {

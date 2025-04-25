@@ -359,20 +359,14 @@ const register = async () => {
   position: relative;
 }
 
-.input-group-prepend {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  left: 10px;
-}
-
 .input-box {
   width: 100%;
   height: 40px;
   border: none;
-  padding-left: 10px;
   margin-bottom: 1rem;
   padding: 0 10px;
+  outline: none;
+  border-radius: 10px;
 }
 
 .input-box:focus {

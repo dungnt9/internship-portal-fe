@@ -131,6 +131,11 @@ const send = async () => {
   padding: 0 10px;
 }
 
+.input-box:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
 .send-button {
   width: 100%;
   height: 40px;

@@ -209,9 +209,13 @@ const login = async () => {
   width: 100%;
   height: 40px;
   border: none;
-  padding-left: 10px;
   margin-bottom: 1rem;
   padding: 0 40px;
+}
+
+.input-box:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .view {

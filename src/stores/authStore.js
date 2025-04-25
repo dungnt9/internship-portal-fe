@@ -10,6 +10,7 @@ export const useAuthStore = defineStore(
   () => {
     const token = ref(null)
 
+    //Vì là
     const isAuthenticated = computed(() => {
       return Boolean(token.value) && token.value !== 'null' && token.value !== 'undefined'
     })
@@ -33,6 +34,7 @@ export const useAuthStore = defineStore(
 
     const logout = () => {
       clearAuth()
+      localStorage.removeItem('auth')
       // const userStore = useUserStore()
       // userStore.clearUser()
       router.push('/dang-nhap')

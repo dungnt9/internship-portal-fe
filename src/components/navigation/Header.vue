@@ -78,6 +78,7 @@ const handleLogout = () => {
   authStore.logout()
   closeLogoutModal()
   router.push('/')
+  window.location.reload()
 }
 </script>
 <style scoped>

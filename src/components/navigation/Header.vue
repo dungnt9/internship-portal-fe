@@ -50,7 +50,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import Dropdown from '../info/Ddropdown.vue'
+import Dropdown from '../info/Dropdown.vue'
 import LogoutModal from '../info/LogoutModal.vue'
 
 const authStore = useAuthStore()
@@ -102,7 +102,7 @@ const handleLogout = () => {
   justify-content: center;
   align-items: center;
   width: 100%;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   height: 5rem;
 }
 
@@ -137,6 +137,7 @@ const handleLogout = () => {
   animation: dropdown 0.5s ease forwards;
   padding-top: 10px;
   display: none;
+  z-index: 1;
 }
 
 .dropdown-container:hover .dropdown-wrapper {

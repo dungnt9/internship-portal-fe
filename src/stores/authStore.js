@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { apiLogin } from '@/services/userService'
+import { apiLogin } from '@/services/authService.js'
 import Cookies from 'js-cookie'
 import router from '@/router'
 import { useUserStore } from './userStore'
@@ -10,7 +10,6 @@ export const useAuthStore = defineStore(
   () => {
     const token = ref(null)
 
-    //Vì là
     const isAuthenticated = computed(() => {
       return Boolean(token.value) && token.value !== 'null' && token.value !== 'undefined'
     })

@@ -66,7 +66,16 @@
         </div>
       </div>
 
-      <div class="col-6 mx-auto d-flex justify-content-center align-items-center">
+      <div v-if="editStatus" class="col-6 mx-auto d-flex justify-content-center align-items-center">
+        <button type="submit" class="login-button">
+          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Chỉnh sửa
+        </button>
+      </div>
+
+      <div class="col-6 mx-auto d-flex justify-content-center align-items-center gap-2">
+        <button type="submit" class="login-button">
+          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Hủy
+        </button>
         <button type="submit" class="login-button">
           <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
         </button>
@@ -86,6 +95,7 @@ const router = useRouter()
 const text_error = ref('')
 const authStore = useAuthStore()
 const loading = ref(false)
+const editStatus = ref(false)
 
 const formData = ref({
   companyName: '',

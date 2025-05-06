@@ -47,7 +47,12 @@
         <div>
           <p>Đơn vị công tác</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input
+              type="text"
+              v-model="formData.email"
+              placeholder="Đơn vị công tác"
+              class="input-box"
+            />
           </div>
         </div>
       </div>
@@ -56,12 +61,7 @@
         <div>
           <p>Vị trí</p>
           <div class="input-group">
-            <input
-              type="text"
-              v-model="formData.phone"
-              placeholder="Điện thoại"
-              class="input-box"
-            />
+            <input type="text" v-model="formData.phone" placeholder="Vị trí" class="input-box" />
           </div>
         </div>
       </div>

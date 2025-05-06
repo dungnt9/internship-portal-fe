@@ -11,7 +11,7 @@ const switchTab = (tab) => {
 </script>
 
 <template>
-  <div class="row gx-4">
+  <div class="row">
     <div class="col-md-3">
       <img src="../../assets/logo.png" alt="" />
       <p>Tên công ty</p>

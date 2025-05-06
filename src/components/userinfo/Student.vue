@@ -45,77 +45,65 @@
       <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
       <div class="col-md-6">
         <div>
-          <p>Đơn vị công tác</p>
-          <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-          </div>
-        </div>
-        <div>
           <p>Mã số sinh viên</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input
+              type="text"
+              v-model="formData.email"
+              placeholder="Mã số sinh viên"
+              class="input-box"
+            />
           </div>
         </div>
         <div>
           <p>Ngành</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Ngành" class="input-box" />
           </div>
         </div>
         <div>
           <p>Lớp</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Lớp" class="input-box" />
           </div>
         </div>
         <div>
           <p>CPA</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="CPA" class="input-box" />
           </div>
         </div>
         <div>
           <p>Ngoại ngữ</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Ngoại ngữ" class="input-box" />
           </div>
         </div>
       </div>
 
       <div class="col-md-6">
         <div>
-          <p>Vị trí</p>
-          <div class="input-group">
-            <input
-              type="text"
-              v-model="formData.phone"
-              placeholder="Điện thoại"
-              class="input-box"
-            />
-          </div>
-        </div>
-        <div>
           <p>Ngày sinh</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Ngày sinh" class="input-box" />
           </div>
         </div>
         <div>
           <p>Giới tính</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Giới tính" class="input-box" />
           </div>
         </div>
         <div>
           <p>Địa chỉ</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Địa chỉ" class="input-box" />
           </div>
         </div>
         <div>
           <p>Kỹ năng</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input type="text" v-model="formData.email" placeholder="Kỹ năng" class="input-box" />
           </div>
         </div>
       </div>

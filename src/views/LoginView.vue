@@ -87,6 +87,7 @@ import { ref } from 'vue'
 import { validEmail, validPhone, emoji } from '@/utils/validators'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
 const router = useRouter()
 
@@ -134,11 +135,10 @@ const login = async () => {
   loading.value = true
   try {
     await authStore.login(payload)
-    // const userStore = useUserStore()
-    // await userStore.fetchUser()
     await router.push('/')
   } catch (err) {
-    text_error.value = err
+    text_error.value = err.response.data.message
+    toast.error(err.response.data.message)
   } finally {
     loading.value = false
   }

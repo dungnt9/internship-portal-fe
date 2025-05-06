@@ -22,10 +22,11 @@ export const useAuthStore = defineStore(
     const login = async (payload) => {
       try {
         const response = await apiLogin(payload)
-        token.value = response.data.accessToken
-        console.log(response.data.role)
-        role.value = response.data.role
-        Cookies.set('token', response.data.accessToken)
+        if (response && response.data) {
+          token.value = response.data.accessToken
+          role.value = response.data.role
+          Cookies.set('token', response.data.accessToken)
+        }
       } catch (error) {
         console.error('Error logging in:', error)
         throw error

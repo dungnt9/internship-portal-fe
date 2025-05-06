@@ -16,6 +16,9 @@
         <router-link to="/danh-gia" class="link">
           <p class="category">Đánh giá</p>
         </router-link>
+        <router-link to="/thong-tin-doanh-nghiep" class="link">
+          <p class="category">Thông tin doanh nghiệp</p>
+        </router-link>
       </div>
 
       <div v-if="authStore.isAuthenticated" class="info">

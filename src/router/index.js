@@ -38,7 +38,39 @@ const router = createRouter({
     {
       path: '/thong-tin-ca-nhan',
       name: 'thong-tin-ca-nhan',
-      component: () => import('../views/ProfileView.vue'),
+      component: () => import('../views/ProfileStudentView.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+      beforeEnter: (to, from, next) => {
+        const authStore = useAuthStore()
+        const userRole = authStore.role
+
+        if (userRole === 'ROLE_STUDENT') {
+          next()
+        } else if (userRole === 'ROLE_TEACHER') {
+          next({ name: 'thong-tin-giang-vien' })
+        } else if (userRole === 'ROLE_COMPANY') {
+          next({ name: 'thong-tin-can-bo-doanh-nghiep' })
+        } else {
+          next()
+        }
+      },
+    },
+    {
+      path: '/thong-tin-giang-vien',
+      name: 'thong-tin-giang-vien',
+      component: () => import('../views/ProfileTeacherView.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
+      path: '/thong-tin-can-bo-doanh-nghiep',
+      name: 'thong-tin-can-bo-doanh-nghiep',
+      component: () => import('../views/ProfileCompanyContactView.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
+      path: '/thong-tin-doanh-nghiep',
+      name: 'thong-tin-doanh-nghiep',
+      component: () => import('../views/CompanyView.vue'),
       meta: { layout: 'default', requiresAuth: true },
     },
     {

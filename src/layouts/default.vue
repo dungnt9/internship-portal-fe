@@ -23,5 +23,6 @@ import Footer from '@/components/navigation/Footer.vue'
 .content {
   flex: 1;
   overflow-y: auto;
+  padding: 20px;
 }
 </style>

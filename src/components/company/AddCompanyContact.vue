@@ -1,32 +1,11 @@
 <template>
   <div class="container">
-    <div class="login-container">
-      <p class="text-center fw-bold title">Thông tin cá nhân</p>
+    <div class="profile-container">
+      <p class="text-center fw-bold title">Thêm người lin lạc</p>
       <div v-if="text_error" class="text-error">
         {{ text_error }}
       </div>
-      <form class="login-form row" @submit.prevent="register">
-        <div class="col-md-12"><strong>Thông tin chung</strong></div>
-        <div class="col-md-6">
-          <div>
-            <p>Ảnh</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.companyName" placeholder="" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Email</p>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="formData.shortName"
-                placeholder="Email"
-                class="input-box"
-              />
-            </div>
-          </div>
-        </div>
-
+      <form class="profile-form row" @submit.prevent="save">
         <div class="col-md-6">
           <div>
             <p>Họ và tên (*)</p>
@@ -39,98 +18,23 @@
               />
             </div>
           </div>
+        </div>
+
+        <div class="col-md-6">
+          <div>
+            <p>Email</p>
+            <div class="input-group">
+              <input type="text" placeholder="Email" class="input-box" disabled />
+            </div>
+          </div>
           <p>Số điện thoại</p>
           <div class="input-group">
-            <input
-              type="text"
-              v-model="formData.taxCode"
-              placeholder="Số điện thoại"
-              class="input-box"
-            />
+            <input type="text" placeholder="Số điện thoại" class="input-box" disabled />
           </div>
         </div>
-
-        <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
-        <div class="col-md-6">
-          <div>
-            <p>Đơn vị công tác</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Mã số sinh viên</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Ngành</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Lớp</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>CPA</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Ngoại ngữ</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div>
-            <p>Vị trí</p>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="formData.phone"
-                placeholder="Điện thoại"
-                class="input-box"
-              />
-            </div>
-          </div>
-          <div>
-            <p>Ngày sinh</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Giới tính</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Địa chỉ</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-          <div>
-            <p>Kỹ năng</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-        </div>
-
         <div class="col-6 mx-auto d-flex justify-content-center align-items-center">
           <button type="submit" class="login-button">
-            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Đăng ký
+            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
           </button>
         </div>
       </form>
@@ -139,8 +43,8 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { validEmail, validPhone, emoji } from '@/utils/validators'
-import { useAuthStore } from '@/stores/authStore'
+import { validEmail, validPhone, emoji } from '@/utils/validators.js'
+import { useAuthStore } from '@/stores/authStore.js'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue3-toastify'
 
@@ -219,7 +123,7 @@ const validateForm = () => {
   return true
 }
 
-const register = async () => {
+const save = async () => {
   if (loading.value) return
 
   text_error.value = ''
@@ -244,7 +148,7 @@ const register = async () => {
 
   loading.value = true
   try {
-    await authStore.register(payload)
+    await authStore.save(payload)
     toast.success('Đăng ký thành công. Vui lòng chờ duyệt tài khoản')
     formData.value = {
       companyName: '',
@@ -280,7 +184,7 @@ const register = async () => {
   justify-content: center;
 }
 
-.login-container {
+.profile-container {
   background-color: rgba(255, 255, 255, 0.96);
   display: flex;
   flex-direction: column;
@@ -304,7 +208,7 @@ const register = async () => {
   font-size: 0.9rem;
 }
 
-.login-form {
+.profile-form {
   min-width: 300px;
   width: 100%;
 }
@@ -372,5 +276,60 @@ p {
   color: #333333;
   text-align: left;
   width: 100%;
+}
+
+.profile-image-container {
+  position: relative;
+  width: 107px;
+  height: 107px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-image {
+  width: auto;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.edit-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background-color: blue;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.edit-badge input[type='file'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.icon-placeholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 </style>

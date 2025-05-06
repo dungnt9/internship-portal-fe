@@ -3,12 +3,12 @@ import { ref, computed } from 'vue'
 import { apiLogin } from '@/services/authService.js'
 import Cookies from 'js-cookie'
 import router from '@/router'
-import { useUserStore } from './userStore'
 
 export const useAuthStore = defineStore(
   'auth',
   () => {
     const token = ref(null)
+    const role = ref(null)
 
     const isAuthenticated = computed(() => {
       return Boolean(token.value) && token.value !== 'null' && token.value !== 'undefined'
@@ -16,15 +16,16 @@ export const useAuthStore = defineStore(
 
     const clearAuth = () => {
       Cookies.remove('token')
+      Cookies.remove('role')
     }
 
     const login = async (payload) => {
       try {
         const response = await apiLogin(payload)
         token.value = response.data.accessToken
+        console.log(response.data.role)
+        role.value = response.data.role
         Cookies.set('token', response.data.accessToken)
-        // const userStore = useUserStore()
-        // await userStore.fetchUser(true)
       } catch (error) {
         console.error('Error logging in:', error)
         throw error
@@ -34,13 +35,12 @@ export const useAuthStore = defineStore(
     const logout = () => {
       clearAuth()
       localStorage.removeItem('auth')
-      // const userStore = useUserStore()
-      // userStore.clearUser()
       router.push('/dang-nhap')
     }
 
     return {
       token,
+      role,
       isAuthenticated,
       login,
       logout,

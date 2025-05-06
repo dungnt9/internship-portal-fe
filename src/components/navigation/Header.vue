@@ -53,8 +53,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-import Dropdown from '../info/Dropdown.vue'
-import LogoutModal from '../info/LogoutModal.vue'
+import Dropdown from '@/components/utils/Dropdown.vue'
+import LogoutModal from '@/components/utils/LogoutModal.vue'
 
 const authStore = useAuthStore()
 const showLogoutModal = ref(false)

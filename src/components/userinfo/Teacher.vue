@@ -1,80 +1,77 @@
 <template>
   <div class="container">
-    <div class="profile-container">
-      <p class="text-center fw-bold title">Thông tin cá nhân</p>
-      <div v-if="text_error" class="text-error">
-        {{ text_error }}
-      </div>
-      <form class="profile-form row" @submit.prevent="save">
-        <div class="col-md-12 d-flex justify-content-center align-items-center">
-          <div class="profile-image-container">
-            <img src="/images/user/default_avatar.svg" class="profile-image" />
-            <div class="edit-badge">
-              <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
-              <input type="file" @change="handleAvatarUpload" ref="fileInput" />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-12"><strong>Thông tin chung</strong></div>
-        <div class="col-md-6">
-          <div>
-            <p>Họ và tên (*)</p>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="formData.fullName"
-                placeholder="Họ và tên"
-                class="input-box"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div>
-            <p>Email</p>
-            <div class="input-group">
-              <input type="text" placeholder="Email" class="input-box" disabled />
-            </div>
-          </div>
-          <p>Số điện thoại</p>
-          <div class="input-group">
-            <input type="text" placeholder="Số điện thoại" class="input-box" disabled />
-          </div>
-        </div>
-
-        <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
-        <div class="col-md-6">
-          <div>
-            <p>Đơn vị công tác</p>
-            <div class="input-group">
-              <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div>
-            <p>Vị trí</p>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="formData.phone"
-                placeholder="Điện thoại"
-                class="input-box"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 mx-auto d-flex justify-content-center align-items-center">
-          <button type="submit" class="login-button">
-            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
-          </button>
-        </div>
-      </form>
+    <div v-if="text_error" class="text-error">
+      {{ text_error }}
     </div>
+    <form class="profile-form row" @submit.prevent="save">
+      <div class="col-md-12 d-flex justify-content-center align-items-center">
+        <div class="profile-image-container">
+          <img src="/images/user/default_avatar.svg" class="profile-image" />
+          <div class="edit-badge">
+            <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
+            <input type="file" @change="handleAvatarUpload" ref="fileInput" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12"><strong>Thông tin chung</strong></div>
+      <div class="col-md-6">
+        <div>
+          <p>Họ và tên (*)</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="formData.fullName"
+              placeholder="Họ và tên"
+              class="input-box"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div>
+          <p>Email</p>
+          <div class="input-group">
+            <input type="text" placeholder="Email" class="input-box" disabled />
+          </div>
+        </div>
+        <p>Số điện thoại</p>
+        <div class="input-group">
+          <input type="text" placeholder="Số điện thoại" class="input-box" disabled />
+        </div>
+      </div>
+
+      <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
+      <div class="col-md-6">
+        <div>
+          <p>Đơn vị công tác</p>
+          <div class="input-group">
+            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div>
+          <p>Vị trí</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="formData.phone"
+              placeholder="Điện thoại"
+              class="input-box"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 mx-auto d-flex justify-content-center align-items-center">
+        <button type="submit" class="login-button">
+          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
+        </button>
+      </div>
+    </form>
   </div>
 </template>
 <script setup>
@@ -218,24 +215,6 @@ const save = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.profile-container {
-  background-color: rgba(255, 255, 255, 0.96);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  min-width: 500px;
-  height: auto;
-  padding: 2rem;
-  box-shadow: 0px 10px 50px rgba(4, 54, 255, 0.1);
-}
-
-.title {
-  color: #c02135;
-  font-size: 1.5rem;
 }
 
 .text-error {

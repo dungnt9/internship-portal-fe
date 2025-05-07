@@ -165,7 +165,7 @@ const login = async () => {
 
 .login-container {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.726);
+  background-color: rgba(255, 255, 255, 0.84);
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -87,22 +87,28 @@
         </div>
       </div>
 
-      <div v-if="editStatus" class="col-6 mx-auto d-flex justify-content-center align-items-center">
-        <button type="button" @click="toggleEditMode" class="login-button-1 btn btn-success">
-          Chỉnh sửa
-        </button>
-      </div>
+      <!-- Buttons in a separate row at the bottom -->
+      <div class="col-md-12">
+        <div
+          v-if="editStatus"
+          class="col-6 mx-auto d-flex justify-content-center align-items-center"
+        >
+          <button type="button" @click="toggleEditMode" class="login-button-1 btn btn-success">
+            Chỉnh sửa
+          </button>
+        </div>
 
-      <div
-        v-if="!editStatus"
-        class="col-6 mx-auto d-flex justify-content-center align-items-center gap-2"
-      >
-        <button type="button" @click="cancelEdit" class="login-button-1 btn btn-secondary">
-          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Hủy
-        </button>
-        <button type="submit" class="login-button-1 btn btn-danger">
-          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
-        </button>
+        <div
+          v-if="!editStatus"
+          class="col-6 mx-auto d-flex justify-content-center align-items-center gap-2"
+        >
+          <button type="button" @click="cancelEdit" class="login-button-1 btn btn-secondary">
+            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Hủy
+          </button>
+          <button type="submit" class="login-button-1 btn btn-danger">
+            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
+          </button>
+        </div>
       </div>
     </form>
   </div>
@@ -198,6 +204,15 @@ const handleSubmit = async () => {
   // Basic validation
   if (!formData.value.name) {
     error.value = 'Vui lòng nhập họ và tên'
+    return
+  }
+
+  // Check if any data has changed
+  const hasChanges = JSON.stringify(formData.value) !== JSON.stringify(originalData.value)
+
+  if (!hasChanges) {
+    toast.info('Không có thay đổi nào được thực hiện')
+    editStatus.value = true // Return to view mode without API call
     return
   }
 

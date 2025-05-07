@@ -309,6 +309,15 @@ const handleSubmit = async () => {
     return
   }
 
+  // Check if any data has changed
+  const hasChanges = JSON.stringify(formData.value) !== JSON.stringify(originalData.value)
+
+  if (!hasChanges) {
+    toast.info('Không có thay đổi nào được thực hiện')
+    editStatus.value = true // Return to view mode without API call
+    return
+  }
+
   // Prepare payload for API
   const payload = {
     name: formData.value.name,

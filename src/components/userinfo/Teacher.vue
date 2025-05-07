@@ -3,20 +3,18 @@
     <div v-if="error" class="text-error">
       {{ error }}
     </div>
-    <form class="profile-form row" @submit.prevent="handleSubmit">
-      <div class="col-md-12 d-flex justify-content-center align-items-center">
-        <div class="profile-image-container">
-          <img
-            :src="formData.imagePath || '/images/user/default_avatar.svg'"
-            class="profile-image"
-          />
-          <div class="edit-badge">
-            <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
-            <input type="file" @change="handleAvatarUpload" ref="fileInput" />
-          </div>
-        </div>
+    <div class="profile-image-container">
+      <img
+        :src="teacherData.imagePath || '/images/user/default_avatar.svg'"
+        class="profile-image"
+      />
+      <div class="edit-badge">
+        <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
+        <input type="file" @change="handleAvatarUpload" ref="fileInput" />
       </div>
+    </div>
 
+    <form class="profile-form row" @submit.prevent="handleSubmit">
       <div class="col-md-12"><strong>Thông tin chung</strong></div>
       <div class="col-md-6">
         <div>
@@ -39,7 +37,7 @@
           <div class="input-group">
             <input
               type="text"
-              v-model="formData.email"
+              v-model="teacherData.email"
               placeholder="Email"
               class="input-box"
               disabled
@@ -50,7 +48,7 @@
         <div class="input-group">
           <input
             type="text"
-            v-model="formData.phone"
+            v-model="teacherData.phone"
             placeholder="Số điện thoại"
             class="input-box"
             disabled
@@ -126,9 +124,6 @@ const formData = ref({
   name: '',
   department: '',
   position: '',
-  imagePath: '',
-  email: '',
-  phone: '',
 })
 
 // Fetch teacher information on component mount
@@ -155,15 +150,35 @@ const cancelEdit = () => {
   error.value = ''
 }
 
+// Complete teacher data including non-editable fields
+const teacherData = ref({
+  id: 0,
+  authUserId: 0,
+  name: '',
+  department: '',
+  position: '',
+  imagePath: '',
+  email: '',
+  phone: '',
+})
+
 // Fetch teacher information from API
 const fetchTeacherInfo = async () => {
   loading.value = true
   try {
     const response = await getInfoTeacher()
     if (response && response.data) {
-      formData.value = response.data
+      teacherData.value = response.data
+
+      // Only store editable fields in formData
+      formData.value = {
+        name: response.data.name,
+        department: response.data.department,
+        position: response.data.position,
+      }
+
       // Store original data for cancel operation
-      originalData.value = { ...response.data }
+      originalData.value = { ...formData.value }
     }
   } catch (err) {
     console.error('Error fetching teacher info:', err)
@@ -197,8 +212,19 @@ const handleSubmit = async () => {
   try {
     const response = await putInfoTeacher(payload)
     if (response && response.data) {
-      formData.value = response.data
-      originalData.value = { ...response.data }
+      // Update teacherData with the complete response
+      teacherData.value = response.data
+
+      // Update formData with editable fields
+      formData.value = {
+        name: response.data.name,
+        department: response.data.department,
+        position: response.data.position,
+      }
+
+      // Store updated data for cancel operation
+      originalData.value = { ...formData.value }
+
       toast.success('Cập nhật thông tin thành công')
       editStatus.value = true // Return to view mode
     }

@@ -55,10 +55,15 @@ const formatCurrency = (value) => {
       <div class="col-md-3">
         <div class="company-sidebar">
           <div class="logo-container">
+            <!--            <img-->
+            <!--              :src="company.logoPath || '../../assets/default-logo.png'"-->
+            <!--              :alt="company.name"-->
+            <!--              @error="$event.target.src = '../../assets/default-logo.png'"-->
+            <!--              class="company-logo"-->
+            <!--            />-->
             <img
               :src="company.logoPath || '../../assets/default-logo.png'"
               :alt="company.name"
-              @error="$event.target.src = '../../assets/default-logo.png'"
               class="company-logo"
             />
           </div>

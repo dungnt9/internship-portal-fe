@@ -80,9 +80,6 @@ onMounted(async () => {
           <div class="position-requirements">
             <p><strong>Yêu cầu:</strong> {{ position.requirements }}</p>
           </div>
-          <div class="position-actions">
-            <button class="apply-button">Đăng ký</button>
-          </div>
         </div>
       </div>
     </div>

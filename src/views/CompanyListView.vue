@@ -55,11 +55,12 @@ const formatCurrency = (value) => {
         @click="navigateToCompanyDetail(company.id)"
       >
         <div class="company-logo">
-          <img
-            :src="company.logoPath || '../../assets/default-logo.png'"
-            :alt="company.name"
-            @error="$event.target.src = '../../assets/default-logo.png'"
-          />
+          <!--          <img-->
+          <!--            :src="company.logoPath || '../../assets/default-logo.png'"-->
+          <!--            :alt="company.name"-->
+          <!--            @error="$event.target.src = '../../assets/default-logo.png'"-->
+          <!--          />-->
+          <img :src="company.logoPath || '../../assets/default-logo.png'" :alt="company.name" />
         </div>
         <div class="company-info">
           <h3 class="company-name">{{ company.name }}</h3>

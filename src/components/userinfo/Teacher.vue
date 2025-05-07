@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <div v-if="text_error" class="text-error">
-      {{ text_error }}
+    <div v-if="error" class="text-error">
+      {{ error }}
     </div>
-    <form class="profile-form row" @submit.prevent="save">
+    <form class="profile-form row" @submit.prevent="handleSubmit">
       <div class="col-md-12 d-flex justify-content-center align-items-center">
         <div class="profile-image-container">
-          <img src="/images/user/default_avatar.svg" class="profile-image" />
+          <img
+            :src="formData.imagePath || '/images/user/default_avatar.svg'"
+            class="profile-image"
+          />
           <div class="edit-badge">
             <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
             <input type="file" @change="handleAvatarUpload" ref="fileInput" />
@@ -21,9 +24,10 @@
           <div class="input-group">
             <input
               type="text"
-              v-model="formData.fullName"
+              v-model="formData.name"
               placeholder="Họ và tên"
               class="input-box"
+              :disabled="editStatus"
             />
           </div>
         </div>
@@ -33,12 +37,24 @@
         <div>
           <p>Email</p>
           <div class="input-group">
-            <input type="text" placeholder="Email" class="input-box" disabled />
+            <input
+              type="text"
+              v-model="formData.email"
+              placeholder="Email"
+              class="input-box"
+              disabled
+            />
           </div>
         </div>
         <p>Số điện thoại</p>
         <div class="input-group">
-          <input type="text" placeholder="Số điện thoại" class="input-box" disabled />
+          <input
+            type="text"
+            v-model="formData.phone"
+            placeholder="Số điện thoại"
+            class="input-box"
+            disabled
+          />
         </div>
       </div>
 
@@ -47,7 +63,13 @@
         <div>
           <p>Đơn vị công tác</p>
           <div class="input-group">
-            <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
+            <input
+              type="text"
+              v-model="formData.department"
+              placeholder="Đơn vị công tác"
+              class="input-box"
+              :disabled="editStatus"
+            />
           </div>
         </div>
       </div>
@@ -58,173 +80,155 @@
           <div class="input-group">
             <input
               type="text"
-              v-model="formData.phone"
-              placeholder="Điện thoại"
+              v-model="formData.position"
+              placeholder="Vị trí"
               class="input-box"
+              :disabled="editStatus"
             />
           </div>
         </div>
       </div>
 
       <div v-if="editStatus" class="col-6 mx-auto d-flex justify-content-center align-items-center">
-        <button type="submit" class="login-button">
-          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Chỉnh sửa
+        <button type="button" @click="toggleEditMode" class="login-button-1 btn btn-success">
+          Chỉnh sửa
         </button>
       </div>
 
-      <div class="col-6 mx-auto d-flex justify-content-center align-items-center gap-2">
-        <button type="submit" class="login-button">
+      <div
+        v-if="!editStatus"
+        class="col-6 mx-auto d-flex justify-content-center align-items-center gap-2"
+      >
+        <button type="button" @click="cancelEdit" class="login-button-1 btn btn-secondary">
           <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Hủy
         </button>
-        <button type="submit" class="login-button">
+        <button type="submit" class="login-button-1 btn btn-danger">
           <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
         </button>
       </div>
     </form>
   </div>
 </template>
+
 <script setup>
-import { ref } from 'vue'
-import { validEmail, validPhone, emoji } from '@/utils/validators'
-import { useAuthStore } from '@/stores/authStore'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
+import { getInfoTeacher, putInfoTeacher } from '@/services/userService'
 
-const router = useRouter()
-
-const text_error = ref('')
-const authStore = useAuthStore()
+// State variables
+const error = ref('')
 const loading = ref(false)
-const editStatus = ref(false)
+const editStatus = ref(true) // true = view mode, false = edit mode
+const originalData = ref({}) // Store original data for cancel operation
 
+// Form data
 const formData = ref({
-  companyName: '',
-  shortName: '',
-  website: '',
-  taxCode: '',
-  address: '',
-  isForeignCompany: false,
-
-  fullName: '',
+  name: '',
+  department: '',
+  position: '',
+  imagePath: '',
   email: '',
   phone: '',
-  position: '',
-  password: '',
-  confirmPassword: '',
 })
 
-const validateForm = () => {
-  const requiredFields = [
-    'companyName',
-    'website',
-    'taxCode',
-    'address',
-    'fullName',
-    'email',
-    'phone',
-    'position',
-    'password',
-    'confirmPassword',
-  ]
-
-  if (!formData.value.isForeignCompany) {
-    requiredFields.push('taxCode')
+// Fetch teacher information on component mount
+onMounted(async () => {
+  try {
+    await fetchTeacherInfo()
+  } catch (err) {
+    error.value = 'Không thể tải thông tin giảng viên. Vui lòng thử lại sau.'
+    toast.error('Không thể tải thông tin giảng viên')
   }
+})
 
-  for (const field of requiredFields) {
-    if (!formData.value[field]) {
-      text_error.value = 'Vui lòng nhập đầy đủ thông tin'
-      return false
-    }
-  }
-
-  if (!validEmail(formData.value.email)) {
-    text_error.value = 'Email không đúng định dạng'
-    return false
-  }
-
-  if (!validPhone(formData.value.phone)) {
-    text_error.value = 'Số điện thoại không đúng định dạng'
-    return false
-  }
-
-  if (formData.value.password.length < 8 || formData.value.password.length > 20) {
-    text_error.value = 'Mật khẩu dài từ 8 - 20 ký tự'
-    return false
-  }
-
-  if (emoji(formData.value.password)) {
-    text_error.value = 'Mật khẩu gồm chữ cái, số hoặc kí tự đặc biệt'
-    return false
-  }
-
-  if (formData.value.password !== formData.value.confirmPassword) {
-    text_error.value = 'Mật khẩu nhập lại không khớp'
-    return false
-  }
-
-  return true
+// Toggle between view and edit mode
+const toggleEditMode = () => {
+  editStatus.value = false
+  // Store original data to revert if canceled
+  originalData.value = { ...formData.value }
 }
 
-const save = async () => {
+// Cancel edit and revert to original data
+const cancelEdit = () => {
+  formData.value = { ...originalData.value }
+  editStatus.value = true
+  error.value = ''
+}
+
+// Fetch teacher information from API
+const fetchTeacherInfo = async () => {
+  loading.value = true
+  try {
+    const response = await getInfoTeacher()
+    if (response && response.data) {
+      formData.value = response.data
+      // Store original data for cancel operation
+      originalData.value = { ...response.data }
+    }
+  } catch (err) {
+    console.error('Error fetching teacher info:', err)
+    error.value = 'Không thể tải thông tin giảng viên'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+// Handle form submission
+const handleSubmit = async () => {
   if (loading.value) return
 
-  text_error.value = ''
+  error.value = ''
 
-  if (!validateForm()) {
+  // Basic validation
+  if (!formData.value.name) {
+    error.value = 'Vui lòng nhập họ và tên'
     return
   }
 
+  // Prepare payload for API
   const payload = {
-    companyName: formData.value.companyName,
-    shortName: formData.value.shortName,
-    website: formData.value.website,
-    taxCode: formData.value.taxCode,
-    address: formData.value.address,
-
-    fullName: formData.value.fullName,
-    email: formData.value.email,
-    phone: formData.value.phone,
+    name: formData.value.name,
+    department: formData.value.department,
     position: formData.value.position,
-    password: formData.value.password,
   }
 
   loading.value = true
   try {
-    await authStore.save(payload)
-    toast.success('Đăng ký thành công. Vui lòng chờ duyệt tài khoản')
-    formData.value = {
-      companyName: '',
-      shortName: '',
-      website: '',
-      taxCode: '',
-      address: '',
-      isForeignCompany: false,
-
-      fullName: '',
-      email: '',
-      phone: '',
-      position: '',
-      password: '',
-      confirmPassword: '',
+    const response = await putInfoTeacher(payload)
+    if (response && response.data) {
+      formData.value = response.data
+      originalData.value = { ...response.data }
+      toast.success('Cập nhật thông tin thành công')
+      editStatus.value = true // Return to view mode
     }
-    setTimeout(() => {
-      router.push('/')
-    }, 3000)
   } catch (err) {
-    text_error.value = err
+    console.error('Error updating teacher info:', err)
+    error.value = 'Không thể cập nhật thông tin giảng viên'
+    toast.error('Cập nhật thông tin không thành công')
   } finally {
     loading.value = false
-    toast.error('Đăng ký không thành công')
+  }
+}
+
+// Handle avatar upload (placeholder for future implementation)
+const handleAvatarUpload = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    // Here you would implement the avatar upload logic
+    // This would typically involve creating a FormData object and sending to an API
+    toast.info('Tính năng tải ảnh đại diện chưa được triển khai')
   }
 }
 </script>
+
 <style>
 .container {
   margin: 1.5rem auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .text-error {
@@ -260,6 +264,11 @@ const save = async () => {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
+.input-box:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
 .view {
   position: absolute;
   right: 10px;
@@ -271,27 +280,15 @@ const save = async () => {
   cursor: pointer;
 }
 
-.login-button {
+.login-button-1 {
   width: 100%;
   height: 40px;
-  background-color: #c02135;
   color: white;
   border-radius: 20px;
   border: none;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s;
-}
-
-.login-button:hover {
-  background-color: #a61b2d;
-}
-
-.button-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
 
 p {

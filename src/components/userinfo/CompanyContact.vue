@@ -1,19 +1,20 @@
 <template>
   <div class="container">
-    <div v-if="text_error" class="text-error">
-      {{ text_error }}
+    <div v-if="error" class="text-error">
+      {{ error }}
     </div>
-    <form class="profile-form row" @submit.prevent="save">
-      <div class="col-md-12 d-flex justify-content-center align-items-center">
-        <div class="profile-image-container">
-          <img src="/images/user/default_avatar.svg" class="profile-image" />
-          <div class="edit-badge">
-            <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
-            <input type="file" @change="handleAvatarUpload" ref="fileInput" />
-          </div>
-        </div>
+    <div class="profile-image-container">
+      <img
+        :src="contactData.imagePath || '/images/user/default_avatar.svg'"
+        class="profile-image"
+      />
+      <div class="edit-badge">
+        <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
+        <input type="file" @change="handleAvatarUpload" ref="fileInput" />
       </div>
+    </div>
 
+    <form class="profile-form row" @submit.prevent="handleSubmit">
       <div class="col-md-12"><strong>Thông tin chung</strong></div>
       <div class="col-md-6">
         <div>
@@ -21,9 +22,10 @@
           <div class="input-group">
             <input
               type="text"
-              v-model="formData.fullName"
+              v-model="formData.name"
               placeholder="Họ và tên"
               class="input-box"
+              :disabled="editStatus"
             />
           </div>
         </div>
@@ -33,25 +35,38 @@
         <div>
           <p>Email</p>
           <div class="input-group">
-            <input type="text" placeholder="Email" class="input-box" disabled />
+            <input
+              type="text"
+              v-model="contactData.email"
+              placeholder="Email"
+              class="input-box"
+              disabled
+            />
           </div>
         </div>
         <p>Số điện thoại</p>
         <div class="input-group">
-          <input type="text" placeholder="Số điện thoại" class="input-box" disabled />
+          <input
+            type="text"
+            v-model="contactData.phone"
+            placeholder="Số điện thoại"
+            class="input-box"
+            disabled
+          />
         </div>
       </div>
 
-      <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
+      <div class="col-md-12"><strong>Thông tin công ty</strong></div>
       <div class="col-md-6">
         <div>
-          <p>Đơn vị công tác</p>
+          <p>Tên công ty</p>
           <div class="input-group">
             <input
               type="text"
-              v-model="formData.email"
-              placeholder="Đơn vị công tác"
+              v-model="contactData.companyName"
+              placeholder="Tên công ty"
               class="input-box"
+              disabled
             />
           </div>
         </div>
@@ -59,162 +74,206 @@
 
       <div class="col-md-6">
         <div>
-          <p>Vị trí</p>
+          <p>Website</p>
           <div class="input-group">
-            <input type="text" v-model="formData.phone" placeholder="Vị trí" class="input-box" />
+            <input
+              type="text"
+              v-model="contactData.companyWebsite"
+              placeholder="Website"
+              class="input-box"
+              disabled
+            />
           </div>
         </div>
       </div>
 
-      <div class="col-6 mx-auto d-flex justify-content-center align-items-center">
-        <button type="submit" class="login-button">
-          <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
-        </button>
+      <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
+      <div class="col-md-6">
+        <div>
+          <p>Vị trí</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="formData.position"
+              placeholder="Vị trí"
+              class="input-box"
+              :disabled="editStatus"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Buttons in a separate row at the bottom -->
+      <div class="col-md-12">
+        <div
+          v-if="editStatus"
+          class="col-6 mx-auto d-flex justify-content-center align-items-center"
+        >
+          <button type="button" @click="toggleEditMode" class="login-button">Chỉnh sửa</button>
+        </div>
+
+        <div
+          v-if="!editStatus"
+          class="col-6 mx-auto d-flex justify-content-center align-items-center gap-2"
+        >
+          <button type="button" @click="cancelEdit" class="login-button btn-secondary">
+            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Hủy
+          </button>
+          <button type="submit" class="login-button btn-danger">
+            <span v-if="loading" class="spinner-border spinner-border-sm mb-2"></span>Lưu
+          </button>
+        </div>
       </div>
     </form>
   </div>
 </template>
+
 <script setup>
-import { ref } from 'vue'
-import { validEmail, validPhone, emoji } from '@/utils/validators'
-import { useAuthStore } from '@/stores/authStore'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
+import { getInfoCompanyContact, putInfoCompanyContact } from '@/services/userService'
 
-const router = useRouter()
-
-const text_error = ref('')
-const authStore = useAuthStore()
+// State variables
+const error = ref('')
 const loading = ref(false)
+const editStatus = ref(true) // true = view mode, false = edit mode
+const originalData = ref({}) // Store original data for cancel operation
 
+// Form data - only contains editable fields
 const formData = ref({
-  companyName: '',
-  shortName: '',
-  website: '',
-  taxCode: '',
-  address: '',
-  isForeignCompany: false,
-
-  fullName: '',
-  email: '',
-  phone: '',
+  name: '',
   position: '',
-  password: '',
-  confirmPassword: '',
 })
 
-const validateForm = () => {
-  const requiredFields = [
-    'companyName',
-    'website',
-    'taxCode',
-    'address',
-    'fullName',
-    'email',
-    'phone',
-    'position',
-    'password',
-    'confirmPassword',
-  ]
+// Complete contact data including non-editable fields
+const contactData = ref({
+  id: 0,
+  authUserId: 0,
+  companyId: 0,
+  name: '',
+  position: '',
+  imagePath: '',
+  companyName: '',
+  companyShortName: '',
+  companyWebsite: '',
+  email: '',
+  phone: '',
+})
 
-  if (!formData.value.isForeignCompany) {
-    requiredFields.push('taxCode')
+// Fetch company contact information on component mount
+onMounted(async () => {
+  try {
+    await fetchCompanyContactInfo()
+  } catch (err) {
+    error.value = 'Không thể tải thông tin liên hệ công ty. Vui lòng thử lại sau.'
+    toast.error('Không thể tải thông tin liên hệ công ty')
   }
+})
 
-  for (const field of requiredFields) {
-    if (!formData.value[field]) {
-      text_error.value = 'Vui lòng nhập đầy đủ thông tin'
-      return false
-    }
-  }
-
-  if (!validEmail(formData.value.email)) {
-    text_error.value = 'Email không đúng định dạng'
-    return false
-  }
-
-  if (!validPhone(formData.value.phone)) {
-    text_error.value = 'Số điện thoại không đúng định dạng'
-    return false
-  }
-
-  if (formData.value.password.length < 8 || formData.value.password.length > 20) {
-    text_error.value = 'Mật khẩu dài từ 8 - 20 ký tự'
-    return false
-  }
-
-  if (emoji(formData.value.password)) {
-    text_error.value = 'Mật khẩu gồm chữ cái, số hoặc kí tự đặc biệt'
-    return false
-  }
-
-  if (formData.value.password !== formData.value.confirmPassword) {
-    text_error.value = 'Mật khẩu nhập lại không khớp'
-    return false
-  }
-
-  return true
+// Toggle between view and edit mode
+const toggleEditMode = () => {
+  editStatus.value = false
+  // Store original data to revert if canceled
+  originalData.value = { ...formData.value }
 }
 
-const save = async () => {
+// Cancel edit and revert to original data
+const cancelEdit = () => {
+  formData.value = { ...originalData.value }
+  editStatus.value = true
+  error.value = ''
+}
+
+// Fetch company contact information from API
+const fetchCompanyContactInfo = async () => {
+  loading.value = true
+  try {
+    const response = await getInfoCompanyContact()
+    if (response && response.data) {
+      contactData.value = response.data
+
+      // Only store editable fields in formData
+      formData.value = {
+        name: response.data.name,
+        position: response.data.position,
+      }
+
+      // Store original data for cancel operation
+      originalData.value = { ...formData.value }
+    }
+  } catch (err) {
+    console.error('Error fetching company contact info:', err)
+    error.value = 'Không thể tải thông tin liên hệ công ty'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+// Handle form submission
+const handleSubmit = async () => {
   if (loading.value) return
 
-  text_error.value = ''
+  error.value = ''
 
-  if (!validateForm()) {
+  // Basic validation
+  if (!formData.value.name) {
+    error.value = 'Vui lòng nhập họ và tên'
     return
   }
 
+  // Prepare payload for API
   const payload = {
-    companyName: formData.value.companyName,
-    shortName: formData.value.shortName,
-    website: formData.value.website,
-    taxCode: formData.value.taxCode,
-    address: formData.value.address,
-
-    fullName: formData.value.fullName,
-    email: formData.value.email,
-    phone: formData.value.phone,
+    name: formData.value.name,
     position: formData.value.position,
-    password: formData.value.password,
   }
 
   loading.value = true
   try {
-    await authStore.save(payload)
-    toast.success('Đăng ký thành công. Vui lòng chờ duyệt tài khoản')
-    formData.value = {
-      companyName: '',
-      shortName: '',
-      website: '',
-      taxCode: '',
-      address: '',
-      isForeignCompany: false,
+    const response = await putInfoCompanyContact(payload)
+    if (response && response.data) {
+      // Update contactData with the complete response
+      contactData.value = response.data
 
-      fullName: '',
-      email: '',
-      phone: '',
-      position: '',
-      password: '',
-      confirmPassword: '',
+      // Update formData with editable fields
+      formData.value = {
+        name: response.data.name,
+        position: response.data.position,
+      }
+
+      // Store updated data for cancel operation
+      originalData.value = { ...formData.value }
+
+      toast.success('Cập nhật thông tin thành công')
+      editStatus.value = true // Return to view mode
     }
-    setTimeout(() => {
-      router.push('/')
-    }, 3000)
   } catch (err) {
-    text_error.value = err
+    console.error('Error updating company contact info:', err)
+    error.value = 'Không thể cập nhật thông tin liên hệ công ty'
+    toast.error('Cập nhật thông tin không thành công')
   } finally {
     loading.value = false
-    toast.error('Đăng ký không thành công')
+  }
+}
+
+// Handle avatar upload (placeholder for future implementation)
+const handleAvatarUpload = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    // Here you would implement the avatar upload logic
+    // This would typically involve creating a FormData object and sending to an API
+    toast.info('Tính năng tải ảnh đại diện chưa được triển khai')
   }
 }
 </script>
+
 <style>
 .container {
   margin: 1.5rem auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .text-error {
@@ -250,6 +309,11 @@ const save = async () => {
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
+.input-box:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
 .view {
   position: absolute;
   right: 10px;
@@ -277,11 +341,20 @@ const save = async () => {
   background-color: #a61b2d;
 }
 
-.button-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
 }
 
 p {

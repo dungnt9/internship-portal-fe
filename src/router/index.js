@@ -42,9 +42,15 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
+      path: '/danh-sach-doanh-nghiep',
+      name: 'danh-sach-doanh-nghiep',
+      component: () => import('../views/CompanyListView.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
       path: '/thong-tin-doanh-nghiep',
       name: 'thong-tin-doanh-nghiep',
-      component: () => import('../views/CompanyView.vue'),
+      component: () => import('../views/CompanyDetailView.vue'),
       meta: { layout: 'default', requiresAuth: true },
     },
     {

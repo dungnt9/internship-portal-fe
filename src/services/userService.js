@@ -72,9 +72,9 @@ export const putInfoMyCompany = async (payload) => {
   }
 }
 
-export const getAllCompany = async (payload) => {
+export const getAllCompany = async () => {
   try {
-    return await api.get('/user/companies/all', payload)
+    return await api.get('/user/companies/all')
   } catch (err) {
     console.error('Lỗi lấy danh sách công ty:', err.message)
     throw err

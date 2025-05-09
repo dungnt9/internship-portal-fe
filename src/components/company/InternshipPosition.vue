@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { getPositionOfCompany } from '@/services/registerService.js'
 
 const props = defineProps({
   companyId: {
@@ -12,32 +13,10 @@ const positions = ref([])
 const loading = ref(true)
 const error = ref(null)
 
-// This would be replaced with an actual API call in a real implementation
 onMounted(async () => {
   try {
-    // Simulating API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Mock data - in a real implementation, you would fetch from an API
-    positions.value = [
-      {
-        id: 1,
-        title: 'Phát triển ứng dụng web với Vue.js',
-        description:
-          'Tham gia vào dự án phát triển ứng dụng web sử dụng Vue.js, làm việc với REST API.',
-        requirements: 'Kiến thức về HTML, CSS, JavaScript, Vue.js',
-        positions: 3,
-        department: 'Phát triển Frontend',
-      },
-      {
-        id: 2,
-        title: 'Phát triển Backend với Spring Boot',
-        description: 'Tham gia vào việc phát triển các API RESTful sử dụng Spring Boot và Java.',
-        requirements: 'Kiến thức về Java, Spring Framework, SQL',
-        positions: 2,
-        department: 'Phát triển Backend',
-      },
-    ]
+    const response = await getPositionOfCompany(props.companyId)
+    positions.value = response.data || []
     loading.value = false
   } catch (err) {
     error.value = 'Không thể tải danh sách đề tài. Vui lòng thử lại sau.'
@@ -69,9 +48,10 @@ onMounted(async () => {
         <div v-for="position in positions" :key="position.id" class="position-card">
           <h4 class="position-title">{{ position.title }}</h4>
           <div class="position-details">
-            <p class="position-department"><strong>Bộ phận:</strong> {{ position.department }}</p>
+            <p class="position-department"><strong>Công ty:</strong> {{ position.companyName }}</p>
             <p class="position-count">
-              <strong>Số lượng:</strong> {{ position.positions }} sinh viên
+              <strong>Số lượng:</strong> {{ position.availableSlots }} sinh viên (Đã đăng ký:
+              {{ position.registeredCount }})
             </p>
           </div>
           <div class="position-description">
@@ -79,6 +59,16 @@ onMounted(async () => {
           </div>
           <div class="position-requirements">
             <p><strong>Yêu cầu:</strong> {{ position.requirements }}</p>
+          </div>
+          <div class="position-benefits" v-if="position.benefits">
+            <p><strong>Quyền lợi:</strong> {{ position.benefits }}</p>
+          </div>
+          <div class="position-info">
+            <p><strong>Hình thức:</strong> {{ position.workType }}</p>
+            <p>
+              <strong>Hạn đăng ký:</strong>
+              {{ new Date(position.dueDate).toLocaleDateString('vi-VN') }}
+            </p>
           </div>
         </div>
       </div>
@@ -144,29 +134,20 @@ onMounted(async () => {
   color: #333;
 }
 
-.position-requirements {
-  margin-bottom: 15px;
+.position-requirements,
+.position-benefits,
+.position-info {
+  margin-bottom: 10px;
   font-size: 0.9rem;
   color: #555;
 }
 
-.position-actions {
-  text-align: right;
-}
-
-.apply-button {
-  background-color: #c02135;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
-}
-
-.apply-button:hover {
-  background-color: #a01c2d;
+.position-info {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  margin-top: 10px;
 }
 
 .loading-container {
@@ -206,14 +187,10 @@ onMounted(async () => {
 }
 
 @media (max-width: 768px) {
-  .position-details {
+  .position-details,
+  .position-info {
     flex-direction: column;
     gap: 5px;
-  }
-
-  .position-actions {
-    text-align: center;
-    margin-top: 15px;
   }
 }
 </style>

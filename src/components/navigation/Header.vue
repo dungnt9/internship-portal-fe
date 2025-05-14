@@ -10,9 +10,20 @@
     </div>
     <div class="menu">
       <div v-if="authStore.isAuthenticated" class="list-category">
-        <router-link to="/dang-ky-thuc-tap" class="link">
+        <div class="dropdown-container" @click="router.push('/dang-ky-thuc-tap')">
           <p class="category">Đăng ký thực tập</p>
-        </router-link>
+          <div class="dropdown-wrapper-1" @click.stop>
+            <Dropdown
+              :items="[
+                { label: 'Đăng ký nguyện vọng', route: '/dang-ky' },
+                {
+                  label: 'Đăng ký thực tập đơn vị chưa liên kết',
+                  route: '/dang-ky-thuc-tap-don-vi-chua-lien-ket',
+                },
+              ]"
+            />
+          </div>
+        </div>
         <router-link to="/danh-gia" class="link">
           <p class="category">Đánh giá</p>
         </router-link>
@@ -146,7 +157,19 @@ const handleLogout = () => {
   z-index: 1;
 }
 
+.dropdown-wrapper-1 {
+  position: absolute;
+  animation: dropdown 0.5s ease forwards;
+  padding-top: 10px;
+  display: none;
+  z-index: 1;
+}
+
 .dropdown-container:hover .dropdown-wrapper {
+  display: block;
+}
+
+.dropdown-container:hover .dropdown-wrapper-1 {
   display: block;
 }
 

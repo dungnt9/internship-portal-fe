@@ -44,3 +44,30 @@ export const updatePosition = async (id, positionData) => {
     throw err
   }
 }
+
+export const getExternalInternship = async () => {
+  try {
+    return await api.get(`/registration/external-internships/me`)
+  } catch (err) {
+    console.error('Lỗi lấy thông tin thực tập:', err.message)
+    throw err
+  }
+}
+
+export const createExternalInternship = async () => {
+  try {
+    return await api.post(`/registration/external-internships`)
+  } catch (err) {
+    console.error('Lỗi tạo thông tin thực tập:', err.message)
+    throw err
+  }
+}
+
+export const updateExternalInternship = async (id) => {
+  try {
+    return await api.put(`/registration/external-internships/${id}`)
+  } catch (err) {
+    console.error('Lỗi cập nhật thông tin thực tập:', err.message)
+    throw err
+  }
+}

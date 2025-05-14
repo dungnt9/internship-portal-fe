@@ -66,6 +66,12 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
+      path: '/dang-ky-thuc-tap-don-vi-chua-lien-ket',
+      name: 'dang-ky-thuc-tap-don-vi-chua-lien-ket',
+      component: () => import('../views/ExternalInternship.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
       path: '/danh-gia',
       name: 'danh-gia',
       component: () => import('../views/EvaluationView.vue'),

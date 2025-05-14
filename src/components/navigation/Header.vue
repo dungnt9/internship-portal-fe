@@ -19,7 +19,7 @@
         <router-link to="/danh-sach-doanh-nghiep" class="link">
           <p class="category">Danh sách doanh nghiệp</p>
         </router-link>
-        <router-link to="/vi-tri-tuyen-dung" class="link">
+        <router-link v-if="authStore.role === 'ROLE_COMPANY'" to="/vi-tri-tuyen-dung" class="link">
           <p class="category">Vị trí tuyển dụng</p>
         </router-link>
       </div>

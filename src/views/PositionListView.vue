@@ -148,7 +148,7 @@ const getStatusText = (status) => {
               </span>
             </td>
             <td>{{ formatDate(position.dueDate) }}</td>
-            <td class="actions-cell">
+            <td>
               <button @click="openEditModal(position.id, $event)" class="edit-button">
                 <i class="fas fa-edit"></i> Sửa
               </button>
@@ -264,17 +264,6 @@ const getStatusText = (status) => {
 .status-open {
   background-color: #e6f7e6;
   color: #28a745;
-}
-
-.status-closed {
-  background-color: #f8d7da;
-  color: #dc3545;
-}
-
-.actions-cell {
-  display: flex;
-  gap: 8px;
-  white-space: nowrap;
 }
 
 .edit-button {

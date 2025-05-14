@@ -120,6 +120,7 @@
                 <th scope="col">Ngày tạo</th>
                 <th scope="col">Trạng thái</th>
                 <th scope="col">Tệp đính kèm</th>
+                <th scope="col">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -149,20 +150,53 @@
                     <i class="bi bi-download me-1"></i>Tải xuống
                   </a>
                 </td>
+                <td>
+                  <button
+                    v-if="app.status === 'PENDING'"
+                    class="btn btn-sm btn-outline-danger"
+                    @click="showCancelConfirmation(app)"
+                    :disabled="cancellingId === app.id"
+                  >
+                    <span
+                      v-if="cancellingId === app.id"
+                      class="spinner-border spinner-border-sm me-1"
+                    ></span>
+                    <i v-else class="bi bi-x-circle me-1"></i>
+                    Hủy đơn
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
+
+    <!-- Modal xác nhận hủy đơn sử dụng component Teleport -->
+    <ConfirmCancel
+      :show="showCancelModal"
+      title="Xác nhận hủy đơn"
+      message="Bạn có chắc chắn muốn hủy đơn đăng ký thực tập ngoài trường này không?"
+      warning="Bạn không thể hoàn tác hành động này sau khi đã xác nhận."
+      confirm-text="Xác nhận hủy"
+      cancel-text="Đóng"
+      :loading="cancelling"
+      @confirm="cancelApplication"
+      @close="showCancelModal = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
-import { getCurrentPeriod, getExternalInternship } from '@/services/registerService'
-import api from '@/services/apiService'
+import {
+  getCurrentPeriod,
+  getExternalInternships,
+  createExternalInternship,
+  cancelExternalInternship,
+} from '@/services/registerService'
+import ConfirmCancel from '@/components/registration/ConfirmCancel.vue'
 
 // State variables
 const error = ref('')
@@ -171,6 +205,10 @@ const loadingList = ref(false)
 const periods = ref([])
 const applications = ref([])
 const selectedFile = ref(null)
+const selectedApplication = ref(null)
+const cancelling = ref(false)
+const cancellingId = ref(null)
+const showCancelModal = ref(false)
 
 // Form data
 const formData = ref({
@@ -213,8 +251,8 @@ const fetchCurrentPeriod = async () => {
 const fetchExternalInternships = async () => {
   loadingList.value = true
   try {
-    // Sửa đường dẫn API cho đúng với backend
-    const response = await getExternalInternship()
+    // Gọi API lấy danh sách đơn đăng ký
+    const response = await getExternalInternships()
     if (response && response.data) {
       applications.value = response.data
     }
@@ -259,8 +297,9 @@ const handleFileChange = (event) => {
 // Remove selected file
 const removeSelectedFile = () => {
   selectedFile.value = null
-  if (this.$refs.fileInput) {
-    this.$refs.fileInput.value = ''
+  const fileInput = document.getElementById('confirmationFile')
+  if (fileInput) {
+    fileInput.value = ''
   }
 }
 
@@ -282,11 +321,7 @@ const handleSubmit = async () => {
     formDataToSubmit.append('confirmationFile', selectedFile.value)
 
     // Gửi request tạo đơn đăng ký
-    const response = await api.post('/registration/external-internships', formDataToSubmit, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    const response = await createExternalInternship(formDataToSubmit)
 
     if (response && response.data) {
       toast.success('Đăng ký thực tập ngoài trường thành công')
@@ -294,24 +329,67 @@ const handleSubmit = async () => {
       // Reset form
       formData.value.periodId = ''
       selectedFile.value = null
-      if (this.$refs.fileInput) {
-        this.$refs.fileInput.value = ''
+      const fileInput = document.getElementById('confirmationFile')
+      if (fileInput) {
+        fileInput.value = ''
       }
 
       // Refresh list
       await fetchExternalInternships()
     }
   } catch (err) {
-    if (err.response.status !== 201) {
-      console.error('Lỗi khi tạo đơn đăng ký:', err)
-      if (err.response && err.response.data && err.response.data.message) {
-        error.value = err.response.data.message
-      } else {
-        error.value = 'Có lỗi xảy ra khi gửi đơn đăng ký. Vui lòng thử lại sau.'
-      }
+    console.error('Lỗi khi tạo đơn đăng ký:', err)
+    if (err.response && err.response.data && err.response.data.message) {
+      error.value = err.response.data.message
+    } else {
+      error.value = 'Có lỗi xảy ra khi gửi đơn đăng ký. Vui lòng thử lại sau.'
     }
+    toast.error('Đăng ký thực tập không thành công')
   } finally {
     loading.value = false
+  }
+}
+
+// Show cancel confirmation modal
+const showCancelConfirmation = (application) => {
+  selectedApplication.value = application
+  showCancelModal.value = true
+}
+
+// Cancel application
+const cancelApplication = async () => {
+  if (!selectedApplication.value || cancelling.value) return
+
+  cancelling.value = true
+  cancellingId.value = selectedApplication.value.id
+
+  try {
+    const response = await cancelExternalInternship(selectedApplication.value.id)
+
+    if (response && response.data) {
+      toast.success('Hủy đơn đăng ký thực tập ngoài trường thành công')
+
+      // Đóng modal
+      showCancelModal.value = false
+
+      // Cập nhật trạng thái trong danh sách
+      const index = applications.value.findIndex((app) => app.id === selectedApplication.value.id)
+      if (index !== -1) {
+        applications.value[index].status = 'CANCELLED'
+      }
+    }
+  } catch (err) {
+    console.error('Lỗi khi hủy đơn đăng ký:', err)
+    let errorMessage = 'Có lỗi xảy ra khi hủy đơn đăng ký'
+
+    if (err.response && err.response.data && err.response.data.message) {
+      errorMessage = err.response.data.message
+    }
+
+    toast.error(errorMessage)
+  } finally {
+    cancelling.value = false
+    cancellingId.value = null
   }
 }
 
@@ -359,6 +437,16 @@ const downloadFile = (application) => {
   // Thực hiện tải xuống file
   // Trong thực tế, cần API endpoint để tải file từ server
   toast.info('Tính năng tải xuống file đang được phát triển')
+
+  // Mẫu code tải file (cần backend endpoint hỗ trợ)
+  /*
+  try {
+    window.open(`${import.meta.env.VITE_API_URL}/registration/download${application.confirmationFilePath}`, '_blank')
+  } catch (err) {
+    console.error('Lỗi khi tải file:', err)
+    toast.error('Không thể tải file. Vui lòng thử lại sau.')
+  }
+  */
 }
 </script>
 

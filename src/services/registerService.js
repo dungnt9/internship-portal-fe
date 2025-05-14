@@ -45,29 +45,34 @@ export const updatePosition = async (id, positionData) => {
   }
 }
 
-export const getExternalInternship = async () => {
+// External Internship APIs
+export const getExternalInternships = async () => {
   try {
-    return await api.get(`/registration/external-internships/me`)
+    return await api.get('/registration/external-internships/me')
   } catch (err) {
-    console.error('Lỗi lấy thông tin thực tập:', err.message)
+    console.error('Lỗi lấy thông tin thực tập ngoài trường:', err.message)
     throw err
   }
 }
 
-export const createExternalInternship = async () => {
+export const createExternalInternship = async (formData) => {
   try {
-    return await api.post(`/registration/external-internships`)
+    return await api.post('/registration/external-internships', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
   } catch (err) {
-    console.error('Lỗi tạo thông tin thực tập:', err.message)
+    console.error('Lỗi tạo thông tin thực tập ngoài trường:', err.message)
     throw err
   }
 }
 
-export const updateExternalInternship = async (id) => {
+export const cancelExternalInternship = async (id) => {
   try {
-    return await api.put(`/registration/external-internships/${id}`)
+    return await api.put(`/registration/external-internships/${id}/cancel`)
   } catch (err) {
-    console.error('Lỗi cập nhật thông tin thực tập:', err.message)
+    console.error('Lỗi hủy đăng ký thực tập ngoài trường:', err.message)
     throw err
   }
 }

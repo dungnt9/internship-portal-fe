@@ -19,6 +19,9 @@
         <router-link to="/danh-sach-doanh-nghiep" class="link">
           <p class="category">Danh sách doanh nghiệp</p>
         </router-link>
+        <router-link to="/vi-tri-tuyen-dung" class="link">
+          <p class="category">Vị trí tuyển dụng</p>
+        </router-link>
       </div>
 
       <div v-if="authStore.isAuthenticated" class="info">

@@ -54,6 +54,12 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
+      path: '/vi-tri-tuyen-dung',
+      name: 'vi-tri-tuyen-dung',
+      component: () => import('../views/PositionListView.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
       path: '/dang-ky-thuc-tap',
       name: 'dang-ky-thuc-tap',
       component: () => import('../views/RegistrationView.vue'),

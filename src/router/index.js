@@ -60,8 +60,8 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
-      path: '/dang-ky-thuc-tap',
-      name: 'dang-ky-thuc-tap',
+      path: '/dang-ky-nguyen-vong',
+      name: 'dang-ky-nguyen-vong',
       component: () => import('../views/RegistrationView.vue'),
       meta: { layout: 'default', requiresAuth: true },
     },

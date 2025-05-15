@@ -18,6 +18,15 @@ export const getCurrentPeriod = async () => {
   }
 }
 
+export const getUpcomingPeriod = async () => {
+  try {
+    return await api.get('/registration/periods/upcoming')
+  } catch (err) {
+    console.error('Lỗi lấy kỳ hiện tại:', err.message)
+    throw err
+  }
+}
+
 export const getListPosition = async () => {
   try {
     return await api.get('/registration/company-positions')
@@ -73,6 +82,39 @@ export const cancelExternalInternship = async (id) => {
     return await api.put(`/registration/external-internships/${id}/cancel`)
   } catch (err) {
     console.error('Lỗi hủy đăng ký thực tập ngoài trường:', err.message)
+    throw err
+  }
+}
+
+export const getMyApplications = async () => {
+  try {
+    return await api.get('/registration/applications/me')
+  } catch (err) {
+    console.error('Lỗi lấy thông tin đăng ký thực tập:', err.message)
+    throw err
+  }
+}
+
+// API để tải lên CV
+export const uploadCV = async (formData) => {
+  try {
+    return await api.post('/registration/applications/upload-cv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  } catch (err) {
+    console.error('Lỗi tải lên CV:', err.message)
+    throw err
+  }
+}
+
+// API để đăng ký 3 nguyện vọng thực tập
+export const registerPreferences = async (preferencesData) => {
+  try {
+    return await api.post('/registration/applications/register-preferences', preferencesData)
+  } catch (err) {
+    console.error('Lỗi đăng ký nguyện vọng thực tập:', err.message)
     throw err
   }
 }

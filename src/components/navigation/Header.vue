@@ -10,12 +10,16 @@
     </div>
     <div class="menu">
       <div v-if="authStore.isAuthenticated" class="list-category">
-        <div class="dropdown-container" @click="router.push('/dang-ky-thuc-tap')">
+        <div
+          v-if="authStore.role == 'ROLE_STUDENT'"
+          class="dropdown-container"
+          @click="router.push('/dang-ky-thuc-tap')"
+        >
           <p class="category">Đăng ký thực tập</p>
           <div class="dropdown-wrapper-1" @click.stop>
             <Dropdown
               :items="[
-                { label: 'Đăng ký nguyện vọng', route: '/dang-ky' },
+                { label: 'Đăng ký nguyện vọng', route: '/dang-ky-nguyen-vong' },
                 {
                   label: 'Đăng ký thực tập đơn vị chưa liên kết',
                   route: '/dang-ky-thuc-tap-don-vi-chua-lien-ket',
@@ -24,7 +28,7 @@
             />
           </div>
         </div>
-        <router-link to="/danh-gia" class="link">
+        <router-link v-if="authStore.role == 'ROLE_COMPANY'" to="/danh-gia" class="link">
           <p class="category">Đánh giá</p>
         </router-link>
         <router-link to="/danh-sach-doanh-nghiep" class="link">

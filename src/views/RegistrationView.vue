@@ -635,7 +635,7 @@ const handleCompanyChange = async (index) => {
     if (response && response.data) {
       // Lọc vị trí theo kỳ thực tập hiện tại
       const filteredPositions = response.data.filter(
-        (position) => position.period && position.period.id === formData.value.periodId,
+        (position) => position.periodId === formData.value.periodId,
       )
 
       // Cập nhật danh sách vị trí cho nguyện vọng này

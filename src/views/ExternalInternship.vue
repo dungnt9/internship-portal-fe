@@ -1,3 +1,4 @@
+<!-- Cập nhật <template> -->
 <template>
   <div class="container mt-4">
     <!-- Tiêu đề và mô tả -->
@@ -32,11 +33,20 @@
               required
             >
               <option value="" disabled selected>-- Chọn kỳ thực tập --</option>
-              <option v-for="period in periods" :key="period.id" :value="period.id">
+              <option
+                v-for="period in periods"
+                :key="period.id"
+                :value="period.id"
+                :disabled="isPeriodRegistered(period.id)"
+              >
                 {{ period.id }} ({{ formatDateRange(period.startDate, period.endDate) }})
+                <span v-if="isPeriodRegistered(period.id)"> - Đã đăng ký</span>
               </option>
             </select>
             <small class="form-text text-muted">Chọn kỳ thực tập bạn muốn đăng ký</small>
+            <div v-if="isPeriodRegistered(formData.periodId)" class="text-danger mt-1">
+              Bạn đã đăng ký kỳ thực tập này rồi
+            </div>
           </div>
 
           <div class="mb-3">
@@ -49,7 +59,7 @@
               ref="fileInput"
               class="form-control"
               @change="handleFileChange"
-              :disabled="loading"
+              :disabled="loading || isPeriodRegistered(formData.periodId)"
               required
             />
             <small class="form-text text-muted">
@@ -73,7 +83,11 @@
           </div>
 
           <div class="d-grid mt-4">
-            <button type="submit" class="btn btn-primary" :disabled="loading || !formIsValid">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              :disabled="loading || !formIsValid || isPeriodRegistered(formData.periodId)"
+            >
               <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
               Gửi đơn đăng ký
             </button>
@@ -82,6 +96,7 @@
       </div>
     </div>
 
+    <!-- Phần còn lại không thay đổi -->
     <!-- Danh sách đơn đăng ký -->
     <div class="card">
       <div
@@ -158,6 +173,7 @@
   </div>
 </template>
 
+<!-- Cập nhật <script setup> -->
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
@@ -183,13 +199,27 @@ const formData = ref({
 
 // Computed property to check if form is valid
 const formIsValid = computed(() => {
-  return formData.value.periodId && selectedFile.value
+  return (
+    formData.value.periodId && selectedFile.value && !isPeriodRegistered(formData.value.periodId)
+  )
 })
+
+// Kiểm tra xem kỳ thực tập đã được đăng ký chưa
+const isPeriodRegistered = (periodId) => {
+  if (!periodId) return false
+
+  // Kiểm tra trong các đơn đăng ký đã có
+  return applications.value.some(
+    (app) => app.periodId === periodId && (app.status === 'PENDING' || app.status === 'APPROVED'),
+  )
+}
 
 // Fetch data when component mounts
 onMounted(async () => {
   try {
-    await Promise.all([fetchCurrentPeriod(), fetchExternalInternships()])
+    // Lấy danh sách đơn đăng ký trước để kiểm tra các kỳ đã đăng ký
+    await fetchExternalInternships()
+    await fetchCurrentPeriod()
   } catch (err) {
     error.value = 'Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.'
   }
@@ -203,8 +233,12 @@ const fetchCurrentPeriod = async () => {
       // Assume the response includes an active period
       periods.value = [response.data]
 
-      // Set the current period as default
-      formData.value.periodId = response.data.id
+      // Set the current period as default only if chưa đăng ký
+      if (!isPeriodRegistered(response.data.id)) {
+        formData.value.periodId = response.data.id
+      } else {
+        formData.value.periodId = ''
+      }
     }
   } catch (err) {
     console.error('Lỗi khi lấy thông tin kỳ thực tập:', err)
@@ -274,6 +308,12 @@ const handleSubmit = async () => {
   if (loading.value) return
   if (!formIsValid.value) {
     toast.error('Vui lòng điền đầy đủ thông tin và tải lên file xác nhận')
+    return
+  }
+
+  // Kiểm tra lại xem kỳ này đã đăng ký chưa
+  if (isPeriodRegistered(formData.value.periodId)) {
+    toast.error('Bạn đã đăng ký kỳ thực tập này rồi')
     return
   }
 
@@ -374,6 +414,7 @@ const downloadFile = (application) => {
 </script>
 
 <style scoped>
+/* Giữ nguyên phần CSS */
 .container {
   max-width: 900px;
 }

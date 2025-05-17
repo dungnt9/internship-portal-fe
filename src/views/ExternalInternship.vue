@@ -120,7 +120,6 @@
                 <th scope="col">Ngày tạo</th>
                 <th scope="col">Trạng thái</th>
                 <th scope="col">Tệp đính kèm</th>
-                <th scope="col">Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -150,40 +149,12 @@
                     <i class="bi bi-download me-1"></i>Tải xuống
                   </a>
                 </td>
-                <td>
-                  <button
-                    v-if="app.status === 'PENDING'"
-                    class="btn btn-sm btn-outline-danger"
-                    @click="showCancelConfirmation(app)"
-                    :disabled="cancellingId === app.id"
-                  >
-                    <span
-                      v-if="cancellingId === app.id"
-                      class="spinner-border spinner-border-sm me-1"
-                    ></span>
-                    <i v-else class="bi bi-x-circle me-1"></i>
-                    Hủy đơn
-                  </button>
-                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-
-    <!-- Modal xác nhận hủy đơn sử dụng component Teleport -->
-    <ConfirmCancel
-      :show="showCancelModal"
-      title="Xác nhận hủy đơn"
-      message="Bạn có chắc chắn muốn hủy đơn đăng ký thực tập ngoài trường này không?"
-      warning="Bạn không thể hoàn tác hành động này sau khi đã xác nhận."
-      confirm-text="Xác nhận hủy"
-      cancel-text="Đóng"
-      :loading="cancelling"
-      @confirm="cancelApplication"
-      @close="showCancelModal = false"
-    />
   </div>
 </template>
 
@@ -191,12 +162,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
 import {
-  getCurrentPeriod,
+  getUpcomingPeriod,
   getExternalInternships,
   createExternalInternship,
-  cancelExternalInternship,
 } from '@/services/registerService'
-import ConfirmCancel from '@/components/registration/ConfirmCancel.vue'
 
 // State variables
 const error = ref('')
@@ -206,9 +175,6 @@ const periods = ref([])
 const applications = ref([])
 const selectedFile = ref(null)
 const selectedApplication = ref(null)
-const cancelling = ref(false)
-const cancellingId = ref(null)
-const showCancelModal = ref(false)
 
 // Form data
 const formData = ref({
@@ -232,7 +198,7 @@ onMounted(async () => {
 // Fetch current period information
 const fetchCurrentPeriod = async () => {
   try {
-    const response = await getCurrentPeriod()
+    const response = await getUpcomingPeriod()
     if (response && response.data) {
       // Assume the response includes an active period
       periods.value = [response.data]
@@ -347,49 +313,6 @@ const handleSubmit = async () => {
     toast.error('Đăng ký thực tập không thành công')
   } finally {
     loading.value = false
-  }
-}
-
-// Show cancel confirmation modal
-const showCancelConfirmation = (application) => {
-  selectedApplication.value = application
-  showCancelModal.value = true
-}
-
-// Cancel application
-const cancelApplication = async () => {
-  if (!selectedApplication.value || cancelling.value) return
-
-  cancelling.value = true
-  cancellingId.value = selectedApplication.value.id
-
-  try {
-    const response = await cancelExternalInternship(selectedApplication.value.id)
-
-    if (response && response.data) {
-      toast.success('Hủy đơn đăng ký thực tập ngoài trường thành công')
-
-      // Đóng modal
-      showCancelModal.value = false
-
-      // Cập nhật trạng thái trong danh sách
-      const index = applications.value.findIndex((app) => app.id === selectedApplication.value.id)
-      if (index !== -1) {
-        applications.value[index].status = 'CANCELLED'
-      }
-    }
-  } catch (err) {
-    console.error('Lỗi khi hủy đơn đăng ký:', err)
-    let errorMessage = 'Có lỗi xảy ra khi hủy đơn đăng ký'
-
-    if (err.response && err.response.data && err.response.data.message) {
-      errorMessage = err.response.data.message
-    }
-
-    toast.error(errorMessage)
-  } finally {
-    cancelling.value = false
-    cancellingId.value = null
   }
 }
 

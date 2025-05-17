@@ -77,15 +77,6 @@ export const createExternalInternship = async (formData) => {
   }
 }
 
-export const cancelExternalInternship = async (id) => {
-  try {
-    return await api.put(`/registration/external-internships/${id}/cancel`)
-  } catch (err) {
-    console.error('Lỗi hủy đăng ký thực tập ngoài trường:', err.message)
-    throw err
-  }
-}
-
 export const getMyApplications = async () => {
   try {
     return await api.get('/registration/applications/me')

@@ -48,6 +48,18 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
+      path: '/duyet-thuc-tap',
+      name: 'duyet-thuc-tap',
+      component: () => import('../views/ApproveCV.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
+      path: '/lich-su-duyet',
+      name: 'lich-su-duyet',
+      component: () => import('../views/ApplicationHistory.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
       path: '/thong-tin-doanh-nghiep',
       name: 'thong-tin-doanh-nghiep',
       component: () => import('../views/CompanyDetailView.vue'),

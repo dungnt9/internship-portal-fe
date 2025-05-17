@@ -37,6 +37,9 @@
         <router-link v-if="authStore.role === 'ROLE_COMPANY'" to="/vi-tri-tuyen-dung" class="link">
           <p class="category">Vị trí tuyển dụng</p>
         </router-link>
+        <router-link v-if="authStore.role === 'ROLE_COMPANY'" to="/duyet-thuc-tap" class="link">
+          <p class="category">Xét duyệt sinh viên thực tập</p>
+        </router-link>
       </div>
 
       <div v-if="authStore.isAuthenticated" class="info">

@@ -1,10 +1,10 @@
-<!-- InternshipProgress.vue - Cập nhật để sử dụng API mới -->
+<!-- ConfirmInternship.vue - Dành cho giáo viên xác nhận thực tập -->
 <template>
-  <div class="internship-progress container py-4">
+  <div class="confirm-internship container py-4">
     <div class="row mb-4">
       <div class="col">
-        <h2 class="mb-1">Quá trình thực tập của sinh viên</h2>
-        <p class="text-muted">Thông tin tiến độ thực tập của sinh viên tại công ty</p>
+        <h2 class="mb-1">Xác nhận thực tập sinh viên</h2>
+        <p class="text-muted">Quản lý và xác nhận tiến trình thực tập của sinh viên</p>
       </div>
     </div>
 
@@ -12,13 +12,9 @@
     <div class="card mb-4">
       <div class="card-body">
         <div class="row g-3">
-          <div class="col-md-10">
+          <div class="col-md-5">
             <label class="form-label">Kỳ thực tập</label>
-            <select
-              v-model="selectedPeriodId"
-              class="form-select"
-              @change="fetchInternshipProgress"
-            >
+            <select v-model="selectedPeriodId" class="form-select" @change="fetchTeacherProgress">
               <option value="">Tất cả kỳ thực tập</option>
               <option v-for="period in periods" :key="period.id" :value="period.id">
                 {{ period.id }} ({{ formatDateRange(period.startDate, period.endDate) }})
@@ -26,12 +22,18 @@
             </select>
           </div>
 
+          <div class="col-md-5">
+            <label class="form-label">Trạng thái</label>
+            <select v-model="selectedStatus" class="form-select" @change="fetchTeacherProgress">
+              <option value="">Tất cả trạng thái</option>
+              <option value="IN_PROGRESS">Đang thực tập</option>
+              <option value="COMPLETED">Đã hoàn thành</option>
+              <option value="CANCELLED">Đã hủy</option>
+            </select>
+          </div>
+
           <div class="col-md-2 d-flex align-items-end">
-            <button
-              class="btn btn-primary w-100"
-              @click="fetchInternshipProgress"
-              :disabled="loading"
-            >
+            <button class="btn btn-primary w-100" @click="fetchTeacherProgress" :disabled="loading">
               <i class="bi bi-funnel-fill me-1"></i>Lọc
             </button>
           </div>
@@ -51,7 +53,7 @@
     <div v-else-if="progressList.length === 0" class="text-center py-5 bg-light rounded">
       <i class="bi bi-clipboard" style="font-size: 3rem"></i>
       <h5 class="mt-3">Không có sinh viên thực tập</h5>
-      <p class="text-muted">Không tìm thấy sinh viên thực tập nào phù hợp với kỳ đã chọn</p>
+      <p class="text-muted">Không tìm thấy sinh viên thực tập nào phù hợp với bộ lọc đã chọn</p>
     </div>
 
     <!-- Progress table -->
@@ -66,8 +68,8 @@
                 <th>Vị trí thực tập</th>
                 <th>Thời gian</th>
                 <th>Trạng thái</th>
-                <th>GV hướng dẫn</th>
                 <th>Điểm CPA</th>
+                <th>Xác nhận</th>
                 <th>Thao tác</th>
               </tr>
             </thead>
@@ -82,12 +84,42 @@
                     {{ getStatusText(item.progress.status) }}
                   </span>
                 </td>
-                <td>{{ item.teacher ? item.teacher.name : 'Chưa phân công' }}</td>
                 <td>{{ item.student.cpa }}</td>
                 <td>
-                  <button class="btn btn-sm btn-outline-primary" @click="showDetails(item)">
-                    <i class="bi bi-eye"></i>
-                  </button>
+                  <span
+                    :class="
+                      item.progress.teacherConfirmed ? 'badge bg-success' : 'badge bg-warning'
+                    "
+                  >
+                    {{ item.progress.teacherConfirmed ? 'Đã xác nhận' : 'Chưa xác nhận' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      @click="showProgressDetails(item.progress.id)"
+                      title="Xem chi tiết"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button
+                      v-if="!item.progress.teacherConfirmed"
+                      class="btn btn-sm btn-success"
+                      @click="confirmInternship(item.progress.id)"
+                      title="Xác nhận"
+                    >
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                    <button
+                      v-else
+                      class="btn btn-sm btn-outline-danger"
+                      @click="unconfirmInternship(item.progress.id)"
+                      title="Hủy xác nhận"
+                    >
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -96,7 +128,7 @@
       </div>
     </div>
 
-    <!-- Student Details Modal using Teleport -->
+    <!-- Student Details Modal -->
     <Teleport to="body">
       <div
         v-if="showDetailsModal && selectedStudent"
@@ -107,11 +139,17 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title">
-                Thông tin sinh viên thực tập - {{ selectedStudent?.student?.name }}
+                Chi tiết thực tập - {{ selectedStudent?.student?.name || 'Sinh viên' }}
               </h5>
               <button type="button" class="btn-close" @click="showDetailsModal = false"></button>
             </div>
-            <div class="modal-body">
+            <div v-if="loadingDetails" class="modal-body text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+              </div>
+              <p class="mt-3">Đang tải thông tin chi tiết...</p>
+            </div>
+            <div v-else class="modal-body">
               <div class="row g-4">
                 <!-- Thông tin sinh viên -->
                 <div class="col-md-6">
@@ -159,13 +197,16 @@
                   </div>
                 </div>
 
-                <!-- Thông tin thực tập -->
+                <!-- Thông tin thực tập và công ty -->
                 <div class="col-md-6">
                   <div class="card h-100">
                     <div class="card-header bg-light">
                       <h6 class="mb-0">Thông tin thực tập</h6>
                     </div>
                     <div class="card-body">
+                      <div class="mb-2">
+                        <strong>Kỳ thực tập:</strong> {{ selectedStudent?.progress?.periodId }}
+                      </div>
                       <div class="mb-2">
                         <strong>Vị trí thực tập:</strong>
                         {{ selectedStudent?.progress?.positionTitle }}
@@ -177,19 +218,31 @@
                         </span>
                       </div>
                       <div class="mb-2">
-                        <strong>Thời gian bắt đầu:</strong>
-                        {{ formatDate(selectedStudent?.progress?.startDate) }}
+                        <strong>Công ty:</strong>
+                        {{ selectedStudent?.company?.name || 'Thực tập ngoài' }}
                       </div>
                       <div class="mb-2">
-                        <strong>Thời gian kết thúc:</strong>
-                        {{ formatDate(selectedStudent?.progress?.endDate) }}
+                        <strong>Địa chỉ công ty:</strong>
+                        {{ selectedStudent?.company?.address || 'N/A' }}
                       </div>
                       <div class="mb-2">
-                        <strong>Kỳ thực tập:</strong> {{ selectedStudent?.progress?.periodId }}
+                        <strong>Website:</strong>
+                        <a
+                          v-if="selectedStudent?.company?.website"
+                          :href="selectedStudent?.company?.website"
+                          target="_blank"
+                        >
+                          {{ selectedStudent?.company?.website }}
+                        </a>
+                        <span v-else>N/A</span>
+                      </div>
+                      <div class="mb-2">
+                        <strong>Loại hình kinh doanh:</strong>
+                        {{ selectedStudent?.company?.businessType || 'N/A' }}
                       </div>
                       <div class="mb-2">
                         <strong>Người hướng dẫn:</strong>
-                        {{ selectedStudent?.progress?.supervisorName || 'Chưa phân công' }}
+                        {{ selectedStudent?.progress?.supervisorName || 'Chưa có' }}
                       </div>
                       <div class="mb-2">
                         <strong>Chức vụ người hướng dẫn:</strong>
@@ -204,7 +257,15 @@
                         {{ selectedStudent?.progress?.supervisorPhone || 'N/A' }}
                       </div>
                       <div class="mb-2">
-                        <strong>Xác nhận GV:</strong>
+                        <strong>Thời gian bắt đầu:</strong>
+                        {{ formatDate(selectedStudent?.progress?.startDate) }}
+                      </div>
+                      <div class="mb-2">
+                        <strong>Thời gian kết thúc:</strong>
+                        {{ formatDate(selectedStudent?.progress?.endDate) }}
+                      </div>
+                      <div class="mb-2">
+                        <strong>Xác nhận của giáo viên:</strong>
                         <span
                           :class="
                             selectedStudent?.progress?.teacherConfirmed
@@ -229,8 +290,51 @@
               </div>
             </div>
             <div class="modal-footer">
+              <button
+                v-if="!selectedStudent?.progress?.teacherConfirmed"
+                class="btn btn-success me-auto"
+                @click="confirmInternship(selectedStudent?.progress?.id)"
+              >
+                <i class="bi bi-check-circle me-1"></i>Xác nhận thực tập
+              </button>
+              <button
+                v-else
+                class="btn btn-outline-danger me-auto"
+                @click="unconfirmInternship(selectedStudent?.progress?.id)"
+              >
+                <i class="bi bi-x-circle me-1"></i>Hủy xác nhận
+              </button>
               <button type="button" class="btn btn-secondary" @click="showDetailsModal = false">
                 Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Confirm Modal -->
+    <Teleport to="body">
+      <div v-if="showConfirmModal" class="modal-backdrop">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">{{ confirmModalTitle }}</h5>
+              <button type="button" class="btn-close" @click="closeConfirmModal"></button>
+            </div>
+            <div class="modal-body">
+              <p>{{ confirmModalMessage }}</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" @click="closeConfirmModal">
+                Hủy
+              </button>
+              <button
+                type="button"
+                :class="confirming ? 'btn btn-success' : 'btn btn-danger'"
+                @click="processConfirmation"
+              >
+                {{ confirming ? 'Xác nhận' : 'Hủy xác nhận' }}
               </button>
             </div>
           </div>
@@ -243,15 +347,28 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
-import { getAllPeriods } from '@/services/companyApplicationService'
-import { getCompanyProgress } from '@/services/registerService'
+import {
+  getTeacherProgress,
+  getProgressDetail,
+  confirmProgress,
+  getAllPeriods,
+} from '@/services/teacherService'
 
 const progressList = ref([])
 const periods = ref([])
 const loading = ref(false)
+const loadingDetails = ref(false)
 const selectedStudent = ref(null)
 const showDetailsModal = ref(false)
 const selectedPeriodId = ref('')
+const selectedStatus = ref('')
+
+// Confirm modal
+const showConfirmModal = ref(false)
+const confirmModalTitle = ref('')
+const confirmModalMessage = ref('')
+const confirmingProgressId = ref(null)
+const confirming = ref(true)
 
 // Format date function
 const formatDate = (dateString) => {
@@ -307,17 +424,111 @@ const getStatusText = (status) => {
   return statusMap[status] || status
 }
 
-// Show student details
-const showDetails = (student) => {
-  selectedStudent.value = student
+// Show student details with API call to get full details
+const showProgressDetails = async (progressId) => {
+  loadingDetails.value = true
   showDetailsModal.value = true
+
+  try {
+    const response = await getProgressDetail(progressId)
+    if (response && response.data) {
+      selectedStudent.value = response.data
+    } else {
+      toast.error('Không thể tải thông tin chi tiết')
+      showDetailsModal.value = false
+    }
+  } catch (error) {
+    console.error('Lỗi khi lấy chi tiết thực tập:', error)
+    toast.error('Không thể tải thông tin chi tiết. Vui lòng thử lại sau.')
+    showDetailsModal.value = false
+  } finally {
+    loadingDetails.value = false
+  }
 }
 
-// Fetch internship progress
-const fetchInternshipProgress = async () => {
+// Close confirm modal
+const closeConfirmModal = () => {
+  showConfirmModal.value = false
+  confirmingProgressId.value = null
+}
+
+// Show confirm modal
+const showConfirmInternshipModal = (progressId) => {
+  confirmingProgressId.value = progressId
+  confirming.value = true
+  confirmModalTitle.value = 'Xác nhận thực tập'
+  confirmModalMessage.value = 'Bạn có chắc muốn xác nhận thực tập cho sinh viên này?'
+  showConfirmModal.value = true
+}
+
+// Show unconfirm modal
+const showUnconfirmInternshipModal = (progressId) => {
+  confirmingProgressId.value = progressId
+  confirming.value = false
+  confirmModalTitle.value = 'Hủy xác nhận thực tập'
+  confirmModalMessage.value = 'Bạn có chắc muốn hủy xác nhận thực tập của sinh viên này?'
+  showConfirmModal.value = true
+}
+
+// Process confirmation
+const processConfirmation = async () => {
+  if (!confirmingProgressId.value) return
+
+  try {
+    loading.value = true
+    await confirmProgress(confirmingProgressId.value, confirming.value)
+
+    // Update the UI after confirmation
+    const progressIndex = progressList.value.findIndex(
+      (p) => p.progress.id === confirmingProgressId.value,
+    )
+
+    if (progressIndex !== -1) {
+      progressList.value[progressIndex].progress.teacherConfirmed = confirming.value
+      progressList.value[progressIndex].progress.teacherConfirmedAt = confirming.value
+        ? new Date().toISOString()
+        : null
+    }
+
+    // If we're viewing details of this progress, update that too
+    if (selectedStudent.value?.progress?.id === confirmingProgressId.value) {
+      selectedStudent.value.progress.teacherConfirmed = confirming.value
+      selectedStudent.value.progress.teacherConfirmedAt = confirming.value
+        ? new Date().toISOString()
+        : null
+    }
+
+    toast.success(
+      confirming.value ? 'Xác nhận thực tập thành công' : 'Hủy xác nhận thực tập thành công',
+    )
+  } catch (error) {
+    console.error('Lỗi khi xác nhận thực tập:', error)
+    toast.error(
+      confirming.value
+        ? 'Không thể xác nhận thực tập. Vui lòng thử lại sau.'
+        : 'Không thể hủy xác nhận thực tập. Vui lòng thử lại sau.',
+    )
+  } finally {
+    loading.value = false
+    closeConfirmModal()
+  }
+}
+
+// Confirm internship
+const confirmInternship = (progressId) => {
+  showConfirmInternshipModal(progressId)
+}
+
+// Unconfirm internship
+const unconfirmInternship = (progressId) => {
+  showUnconfirmInternshipModal(progressId)
+}
+
+// Fetch teacher's assigned internship progress
+const fetchTeacherProgress = async () => {
   loading.value = true
   try {
-    const response = await getCompanyProgress(selectedPeriodId.value)
+    const response = await getTeacherProgress(selectedPeriodId.value, selectedStatus.value)
     if (response && response.data) {
       progressList.value = response.data
     } else {
@@ -348,12 +559,12 @@ const fetchPeriods = async () => {
 // Fetch data on component mount
 onMounted(async () => {
   await fetchPeriods()
-  await fetchInternshipProgress()
+  await fetchTeacherProgress()
 })
 </script>
 
 <style scoped>
-.internship-progress {
+.confirm-internship {
   max-width: 1200px;
 }
 
@@ -381,15 +592,6 @@ onMounted(async () => {
 .btn-outline-primary:hover {
   background-color: #c02135;
   border-color: #c02135;
-  color: white;
-}
-
-.text-primary {
-  color: #c02135 !important;
-}
-
-.bg-primary {
-  background-color: #c02135 !important;
 }
 
 .form-control:focus,
@@ -398,7 +600,7 @@ onMounted(async () => {
   box-shadow: 0 0 0 0.25rem rgba(192, 33, 53, 0.25);
 }
 
-/* Custom modal styling */
+/* Modal styling */
 .modal-backdrop {
   position: fixed;
   top: 0;

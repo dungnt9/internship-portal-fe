@@ -1,7 +1,30 @@
-// services/companyApplicationService.js
 import api from './apiService'
 
-// API lấy danh sách đơn đăng ký đang chờ duyệt
+// Function to get all periods
+export const getAllPeriods = async () => {
+  try {
+    return await api.get('/registration/periods')
+  } catch (err) {
+    console.error('Lỗi lấy danh sách kỳ thực tập:', err.message)
+    throw err
+  }
+}
+
+// Function to get all company applications
+export const getAllApplications = async (status) => {
+  try {
+    let url = '/registration/company-applications/history'
+    if (status) {
+      url += `?status=${status}`
+    }
+    return await api.get(url)
+  } catch (err) {
+    console.error('Lỗi lấy danh sách đơn đăng ký:', err.message)
+    throw err
+  }
+}
+
+// Function to get pending applications
 export const getPendingApplications = async () => {
   try {
     return await api.get('/registration/company-applications/pending')
@@ -11,45 +34,15 @@ export const getPendingApplications = async () => {
   }
 }
 
-// API duyệt/từ chối đơn đăng ký
+// Function to take action on an application
 export const takeActionOnApplication = async (applicationDetailId, action) => {
   try {
     return await api.put('/registration/company-applications/action', {
       applicationDetailId,
-      action, // "APPROVE" hoặc "REJECT"
+      action,
     })
   } catch (err) {
     console.error('Lỗi xử lý đơn đăng ký:', err.message)
-    throw err
-  }
-}
-
-// API lấy lịch sử đơn đăng ký
-export const getApplicationsHistory = async (periodId, status) => {
-  try {
-    let url = '/registration/company-applications/history'
-    let params = []
-
-    if (periodId) params.push(`periodId=${periodId}`)
-    if (status) params.push(`status=${status}`)
-
-    if (params.length > 0) {
-      url += '?' + params.join('&')
-    }
-
-    return await api.get(url)
-  } catch (err) {
-    console.error('Lỗi lấy lịch sử đơn đăng ký:', err.message)
-    throw err
-  }
-}
-
-// API lấy danh sách kỳ thực tập
-export const getAllPeriods = async () => {
-  try {
-    return await api.get('/registration/periods')
-  } catch (err) {
-    console.error('Lỗi lấy danh sách kỳ thực tập:', err.message)
     throw err
   }
 }

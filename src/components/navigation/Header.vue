@@ -47,6 +47,9 @@
         >
           <p class="category">Quá trình thực tập</p>
         </router-link>
+        <router-link v-if="authStore.role === 'ROLE_TEACHER'" to="/xac-nhan-thuc-tap" class="link">
+          <p class="category">Xác nhận thực tập</p>
+        </router-link>
       </div>
 
       <div v-if="authStore.isAuthenticated" class="info">

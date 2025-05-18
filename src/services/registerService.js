@@ -109,3 +109,16 @@ export const registerPreferences = async (preferencesData) => {
     throw err
   }
 }
+
+export const getCompanyProgress = async (periodId) => {
+  try {
+    let url = '/registration/company-progress'
+    if (periodId) {
+      url += `?periodId=${periodId}`
+    }
+    return await api.get(url)
+  } catch (err) {
+    console.error('Lỗi lấy dữ liệu quá trình thực tập:', err.message)
+    throw err
+  }
+}

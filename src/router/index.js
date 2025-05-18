@@ -66,6 +66,12 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
+      path: '/thuc-tap-cua-toi',
+      name: 'thuc-tap-cua-toi',
+      component: () => import('../views/StudentInternshipProgressView.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
+    {
       path: '/lich-su-duyet',
       name: 'lich-su-duyet',
       component: () => import('../views/ApplicationHistory.vue'),

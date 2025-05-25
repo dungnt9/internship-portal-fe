@@ -29,6 +29,15 @@
       @refresh="fetchProgressData"
     />
 
+    <!-- Report and Evaluation Section - Only show if progress data exists -->
+    <div v-if="progressData && !loading">
+      <!-- Internship Report Component -->
+      <StudentInternshipReport :progressData="progressData" />
+
+      <!-- Company Evaluation Component -->
+      <StudentCompanyEvaluation :progressData="progressData" />
+    </div>
+
     <!-- Information Box -->
     <div class="card bg-light mt-4">
       <div class="card-body">
@@ -40,6 +49,10 @@
           Thông tin về người hướng dẫn thực tập cần được cập nhật chính xác để giảng viên quản lý có
           thể liên hệ khi cần thiết. Vui lòng đảm bảo điền đầy đủ và chính xác các thông tin bắt
           buộc.
+        </p>
+        <p class="card-text">
+          Báo cáo thực tập và đánh giá từ công ty là những tài liệu quan trọng trong quá trình đánh
+          giá kết quả thực tập của bạn. Hãy hoàn thành báo cáo một cách chi tiết và cẩn thận.
         </p>
         <p class="card-text">
           Nếu bạn gặp vấn đề trong quá trình thực tập hoặc có thắc mắc, vui lòng liên hệ với giảng
@@ -54,6 +67,8 @@
 import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
 import StudentProgressDetail from '@/components/student/StudentProgressDetail.vue'
+import StudentInternshipReport from '@/components/student/StudentInternshipReport.vue'
+import StudentCompanyEvaluation from '@/components/student/StudentCompanyEvaluation.vue'
 import { getCurrentProgress } from '@/services/studentProgressService'
 
 // Component state

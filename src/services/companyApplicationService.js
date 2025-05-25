@@ -46,3 +46,22 @@ export const takeActionOnApplication = async (applicationDetailId, action) => {
     throw err
   }
 }
+
+export const getApplicationsHistory = async (periodId, status) => {
+  try {
+    let url = '/registration/company-applications/history'
+    let params = []
+
+    if (periodId) params.push(`periodId=${periodId}`)
+    if (status) params.push(`status=${status}`)
+
+    if (params.length > 0) {
+      url += '?' + params.join('&')
+    }
+
+    return await api.get(url)
+  } catch (err) {
+    console.error('Lỗi lấy lịch sử đơn đăng ký:', err.message)
+    throw err
+  }
+}

@@ -56,7 +56,7 @@ const router = createRouter({
     {
       path: '/qua-trinh-thuc-tap-sv',
       name: 'qua-trinh-thuc-tap-sv',
-      component: () => import('../views/InternshipProgress.vue'),
+      component: () => import('../views/CompanyInternshipProgress.vue'),
       meta: { layout: 'default', requiresAuth: true },
     },
     {

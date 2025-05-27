@@ -181,7 +181,7 @@ import {
   getUpcomingPeriod,
   getExternalInternships,
   createExternalInternship,
-} from '@/services/registerService'
+} from '@/services/registerService.js'
 
 // State variables
 const error = ref('')

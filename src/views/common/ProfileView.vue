@@ -14,7 +14,7 @@ import { ref, onMounted } from 'vue'
 import Student from '@/components/userinfo/Student.vue'
 import Teacher from '@/components/userinfo/Teacher.vue'
 import CompanyContact from '@/components/userinfo/CompanyContact.vue'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/authStore.js'
 
 const authStore = useAuthStore()
 const userRole = ref('')

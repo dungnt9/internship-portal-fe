@@ -195,7 +195,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
-import { getApplicationsHistory, getAllPeriods } from '@/services/companyApplicationService'
+import { getApplicationsHistory, getAllPeriods } from '@/services/companyApplicationService.js'
 
 const applications = ref([])
 const periods = ref([])

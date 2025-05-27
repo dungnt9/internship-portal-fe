@@ -552,8 +552,8 @@ import {
   uploadCV,
   registerPreferences,
   getUpcomingPeriod,
-} from '@/services/registerService'
-import { getAllCompany } from '@/services/userService'
+} from '@/services/registerService.js'
+import { getAllCompany } from '@/services/userService.js'
 
 // State variables
 const error = ref('')

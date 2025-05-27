@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getListPosition } from '@/services/registerService'
+import { getListPosition } from '@/services/registerService.js'
 import AddPosition from '@/components/company/AddPosition.vue'
 import EditPosition from '@/components/company/EditPosition.vue'
 

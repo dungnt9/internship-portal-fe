@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import CompanyInfo from '@/components/company/CompanyInfo.vue'
 import InternshipPosition from '@/components/company/InternshipPosition.vue'
-import { getInfoCompanyById } from '@/services/userService'
+import { getInfoCompanyById } from '@/services/userService.js'
 
 const route = useRoute()
 const activeTab = ref('info')

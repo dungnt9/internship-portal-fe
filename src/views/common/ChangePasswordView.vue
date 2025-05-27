@@ -72,8 +72,8 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { validEmail, validPhone, emoji } from '@/utils/validators'
-import { useAuthStore } from '@/stores/authStore'
+import { validEmail, validPhone, emoji } from '@/utils/validators.js'
+import { useAuthStore } from '@/stores/authStore.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()

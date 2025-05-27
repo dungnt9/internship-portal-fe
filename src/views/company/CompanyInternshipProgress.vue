@@ -280,9 +280,9 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { toast } from 'vue3-toastify'
-import { getAllPeriods } from '@/services/companyApplicationService'
-import { getCompanyProgress } from '@/services/registerService'
-import CompanyEvaluationList from '@/components/CompanyEvaluationList.vue'
+import { getAllPeriods } from '@/services/companyApplicationService.js'
+import { getCompanyProgress } from '@/services/registerService.js'
+import CompanyEvaluationList from '@/components/company/CompanyEvaluationList.vue'
 
 const progressList = ref([])
 const periods = ref([])

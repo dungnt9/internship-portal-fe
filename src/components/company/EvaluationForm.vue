@@ -92,7 +92,7 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
 import { toast } from 'vue3-toastify'
-import { getEvaluationDetail, updateEvaluation } from '@/services/evaluationService'
+import { getEvaluationDetail, updateEvaluation } from '@/services/evaluationService.js'
 
 const props = defineProps({
   progressId: {

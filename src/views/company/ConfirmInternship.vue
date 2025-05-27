@@ -352,7 +352,7 @@ import {
   getProgressDetail,
   confirmProgress,
   getAllPeriods,
-} from '@/services/teacherService'
+} from '@/services/teacherService.js'
 
 const progressList = ref([])
 const periods = ref([])

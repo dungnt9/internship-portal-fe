@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAllCompany } from '@/services/userService'
+import { getAllCompany } from '@/services/userService.js'
 
 const companies = ref([])
 const loading = ref(true)

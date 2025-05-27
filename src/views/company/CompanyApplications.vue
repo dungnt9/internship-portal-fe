@@ -75,7 +75,7 @@ import StudentApplicationCard from '@/components/company/StudentApplicationCard.
 import {
   getPendingApplications,
   takeActionOnApplication,
-} from '@/services/companyApplicationService'
+} from '@/services/companyApplicationService.js'
 
 const pendingApplications = ref([])
 const loading = ref(false)

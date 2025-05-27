@@ -69,7 +69,7 @@ import { toast } from 'vue3-toastify'
 import StudentProgressDetail from '@/components/student/StudentProgressDetail.vue'
 import StudentInternshipReport from '@/components/student/StudentInternshipReport.vue'
 import StudentCompanyEvaluation from '@/components/student/StudentCompanyEvaluation.vue'
-import { getCurrentProgress } from '@/services/studentProgressService'
+import { getCurrentProgress } from '@/services/studentProgressService.js'
 
 // Component state
 const loading = ref(false)

@@ -28,8 +28,12 @@
             />
           </div>
         </div>
-        <router-link v-if="authStore.role == 'ROLE_COMPANY'" to="/danh-gia" class="link">
-          <p class="category">Đánh giá</p>
+        <router-link
+          v-if="authStore.role == 'ROLE_COMPANY'"
+          to="/tai-khoan-doanh-nghiep"
+          class="link"
+        >
+          <p class="category">Tài khoản doanh nghiệp</p>
         </router-link>
         <router-link to="/danh-sach-doanh-nghiep" class="link">
           <p class="category">Danh sách doanh nghiệp</p>

@@ -245,8 +245,8 @@ import { ref, onMounted, computed } from 'vue'
 import { toast } from 'vue3-toastify'
 import { getAllPeriods } from '@/services/companyApplicationService.js'
 import { getCompanyInternships, getEvaluationDetail } from '@/services/evaluationService.js'
-import EvaluationForm from '@/components/EvaluationForm.vue'
-import EvaluationDetail from '@/components/EvaluationDetail.vue'
+import EvaluationForm from '@/components/company/EvaluationForm.vue'
+import EvaluationDetail from '@/components/company/EvaluationDetail.vue'
 
 const internships = ref([])
 const periods = ref([])

@@ -24,8 +24,8 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { validEmail } from '@/utils/validators'
-import { useAuthStore } from '@/stores/authStore'
+import { validEmail } from '@/utils/validators.js'
+import { useAuthStore } from '@/stores/authStore.js'
 
 const text_error = ref('')
 const authStore = useAuthStore()

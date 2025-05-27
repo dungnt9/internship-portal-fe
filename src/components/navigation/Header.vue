@@ -29,11 +29,11 @@
           </div>
         </div>
         <router-link
-          v-if="authStore.role == 'ROLE_COMPANY'"
-          to="/tai-khoan-doanh-nghiep"
+          v-if="authStore.role === 'ROLE_COMPANY'"
+          to="/quan-ly-nguoi-lien-lac"
           class="link"
         >
-          <p class="category">Tài khoản doanh nghiệp</p>
+          <p class="category">Quản lý người liên lạc</p>
         </router-link>
         <router-link to="/danh-sach-doanh-nghiep" class="link">
           <p class="category">Danh sách doanh nghiệp</p>

@@ -102,8 +102,8 @@ const router = createRouter({
       meta: { layout: 'default', requiresAuth: true },
     },
     {
-      path: '/tai-khoan-doanh-nghiep',
-      name: 'tai-khoan-doanh-nghiep',
+      path: '/quan-ly-nguoi-lien-lac',
+      name: 'quan-ly-nguoi-lien-lac',
       component: () => import('../views/company/CompanyContact.vue'),
       meta: { layout: 'default', requiresAuth: true },
     },

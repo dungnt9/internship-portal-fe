@@ -89,3 +89,19 @@ export const getInfoCompanyById = async (payload) => {
     throw err
   }
 }
+
+export const uploadAvatar = async (file) => {
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    return await api.post('/user/upload/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  } catch (err) {
+    console.error('Lỗi upload avatar:', err.message)
+    throw err
+  }
+}

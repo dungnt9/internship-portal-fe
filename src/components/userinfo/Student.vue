@@ -5,12 +5,20 @@
     </div>
     <div class="profile-image-container">
       <img
-        :src="studentData.imagePath || '/images/user/default_avatar.svg'"
+        :src="getAvatarUrl(studentData.imagePath)"
         class="profile-image"
+        @error="handleImageError"
       />
-      <div class="edit-badge">
-        <img src="/images/user/edit_profile.svg" class="icon-placeholder" />
-        <input type="file" @change="handleAvatarUpload" ref="fileInput" />
+      <div class="edit-badge" :class="{ uploading: uploadingAvatar }">
+        <img v-if="!uploadingAvatar" src="/images/user/edit_profile.svg" class="icon-placeholder" />
+        <div v-else class="spinner-border spinner-border-sm text-white"></div>
+        <input
+          type="file"
+          @change="handleAvatarUpload"
+          ref="fileInput"
+          accept="image/*"
+          :disabled="uploadingAvatar"
+        />
       </div>
     </div>
 
@@ -200,13 +208,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
-import { getInfoStudent, putInfoStudent } from '@/services/userService'
+import { getInfoStudent, putInfoStudent, uploadAvatar } from '@/services/userService'
 
 // State variables
 const error = ref('')
 const loading = ref(false)
 const editStatus = ref(true) // true = view mode, false = edit mode
 const originalData = ref({}) // Store original data for cancel operation
+const fileInput = ref(null)
+const uploadingAvatar = ref(false)
 
 // Form data - only contains editable fields
 const formData = ref({
@@ -367,13 +377,57 @@ const handleSubmit = async () => {
 }
 
 // Handle avatar upload (placeholder for future implementation)
-const handleAvatarUpload = (event) => {
+const handleAvatarUpload = async (event) => {
   const file = event.target.files[0]
-  if (file) {
-    // Here you would implement the avatar upload logic
-    // This would typically involve creating a FormData object and sending to an API
-    toast.info('Tính năng tải ảnh đại diện chưa được triển khai')
+  if (!file) return
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    toast.error('Vui lòng chọn file ảnh hợp lệ')
+    return
   }
+
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    toast.error('Kích thước file không được vượt quá 5MB')
+    return
+  }
+
+  uploadingAvatar.value = true
+
+  try {
+    const response = await uploadAvatar(file)
+    if (response && response.data) {
+      // Update avatar path in local data
+      studentData.value.imagePath = response.data
+      toast.success('Cập nhật ảnh đại diện thành công')
+    }
+  } catch (err) {
+    console.error('Error uploading avatar:', err)
+    toast.error('Không thể cập nhật ảnh đại diện')
+  } finally {
+    uploadingAvatar.value = false
+    // Clear input
+    if (fileInput.value) {
+      fileInput.value.value = ''
+    }
+  }
+}
+
+const getAvatarUrl = (imagePath) => {
+  if (!imagePath) return '/images/user/default_avatar.svg'
+
+  // If imagePath starts with /uploads/, it's a relative path from our server
+  if (imagePath.startsWith('/uploads/')) {
+    return `http://localhost:8002${imagePath}`
+  }
+
+  // If it's already a full URL or relative path, return as is
+  return imagePath
+}
+
+const handleImageError = (event) => {
+  event.target.src = '/images/user/default_avatar.svg'
 }
 </script>
 
@@ -521,5 +575,18 @@ p {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.edit-badge.uploading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.profile-image {
+  width: 107px;
+  height: 107px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 </style>

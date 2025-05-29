@@ -51,7 +51,7 @@
 
           <div class="mb-3">
             <label for="confirmationFile" class="form-label">
-              Tệp xác nhận/CV <span class="text-danger">*</span>
+              Tệp xác nhận <span class="text-danger">*</span>
             </label>
             <input
               type="file"
@@ -63,7 +63,7 @@
               required
             />
             <small class="form-text text-muted">
-              Tải lên giấy xác nhận từ công ty hoặc CV (định dạng PDF, DOC, DOCX)
+              Tải lên giấy xác nhận từ công ty (định dạng PDF, DOC, DOCX)
             </small>
           </div>
 
@@ -177,6 +177,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
+import { viewFile } from '@/services/fileService'
 import {
   getUpcomingPeriod,
   getExternalInternships,
@@ -212,6 +213,22 @@ const isPeriodRegistered = (periodId) => {
   return applications.value.some(
     (app) => app.periodId === periodId && (app.status === 'PENDING' || app.status === 'APPROVED'),
   )
+}
+
+const downloadFile = (application) => {
+  if (!application.confirmationFilePath) {
+    toast.error('Không tìm thấy đường dẫn tải tệp')
+    return
+  }
+
+  try {
+    // Open file in new tab for viewing
+    const fileUrl = viewFile(application.confirmationFilePath)
+    window.open(fileUrl, '_blank')
+  } catch (err) {
+    console.error('Lỗi khi xem file:', err)
+    toast.error('Không thể mở file. Vui lòng thử lại sau.')
+  }
 }
 
 // Fetch data when component mounts
@@ -388,28 +405,6 @@ const getStatusText = (status) => {
     CANCELLED: 'Đã hủy',
   }
   return statusMap[status] || status
-}
-
-// Download file (placeholder - would need backend support)
-const downloadFile = (application) => {
-  if (!application.confirmationFilePath) {
-    toast.error('Không tìm thấy đường dẫn tải tệp')
-    return
-  }
-
-  // Thực hiện tải xuống file
-  // Trong thực tế, cần API endpoint để tải file từ server
-  toast.info('Tính năng tải xuống file đang được phát triển')
-
-  // Mẫu code tải file (cần backend endpoint hỗ trợ)
-  /*
-  try {
-    window.open(`${import.meta.env.VITE_API_URL}/registration/download${application.confirmationFilePath}`, '_blank')
-  } catch (err) {
-    console.error('Lỗi khi tải file:', err)
-    toast.error('Không thể tải file. Vui lòng thử lại sau.')
-  }
-  */
 }
 </script>
 

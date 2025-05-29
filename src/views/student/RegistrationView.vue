@@ -545,6 +545,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { toast } from 'vue3-toastify'
+import { viewFile } from '@/services/fileService'
 import {
   getCurrentPeriod,
   getPositionOfCompany,
@@ -605,6 +606,22 @@ const arePreferencesValid = computed(() => {
     preferences.value[2].positionId
   )
 })
+
+const downloadFile = (application) => {
+  if (!application.cvFilePath) {
+    toast.error('Không tìm thấy đường dẫn tải CV')
+    return
+  }
+
+  try {
+    // Open CV file in new tab for viewing
+    const fileUrl = viewFile(application.cvFilePath)
+    window.open(fileUrl, '_blank')
+  } catch (err) {
+    console.error('Lỗi khi xem CV:', err)
+    toast.error('Không thể mở CV. Vui lòng thử lại sau.')
+  }
+}
 
 // Hiển thị placeholder cho select vị trí dựa trên trạng thái
 const getPositionPlaceholder = (index) => {
@@ -832,28 +849,6 @@ const fetchMyApplications = async () => {
   } finally {
     loadingApplications.value = false
   }
-}
-
-// Download file (placeholder - would need backend support)
-const downloadFile = (application) => {
-  if (!application.cvFilePath) {
-    toast.error('Không tìm thấy đường dẫn tải CV')
-    return
-  }
-
-  // Thực hiện tải xuống file
-  // Trong thực tế, cần API endpoint để tải file từ server
-  toast.info('Tính năng tải xuống file đang được phát triển')
-
-  // Mẫu code tải file (cần backend endpoint hỗ trợ)
-  /*
-  try {
-    window.open(`${import.meta.env.VITE_API_URL}/registration/download${application.cvFilePath}`, '_blank')
-  } catch (err) {
-    console.error('Lỗi khi tải file:', err)
-    toast.error('Không thể tải file. Vui lòng thử lại sau.')
-  }
-  */
 }
 
 // Helper function to get cookie

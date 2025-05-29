@@ -52,9 +52,10 @@
             <div class="mb-3">
               <h6>CV của sinh viên</h6>
               <a
-                :href="application.cvFilePath"
+                :href="getCvViewUrl(application.cvFilePath)"
                 target="_blank"
                 class="btn btn-outline-primary btn-sm w-100"
+                :class="{ disabled: !application.cvFilePath }"
               >
                 <i class="bi bi-file-earmark-text me-2"></i>Xem CV
               </a>
@@ -77,6 +78,7 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue'
 import ApprovalActionButtons from './ApprovalActionButtons.vue'
+import { viewFile } from '@/services/fileService'
 
 const props = defineProps({
   application: {
@@ -86,6 +88,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['approve', 'reject'])
+
+const getCvViewUrl = (cvFilePath) => {
+  if (!cvFilePath) return '#'
+  return viewFile(cvFilePath)
+}
 
 // Format date function
 const formatDate = (dateString) => {

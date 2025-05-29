@@ -170,9 +170,10 @@
 
                   <div class="mb-2">
                     <a
-                      :href="selectedApplication.cvFilePath"
+                      :href="getCvViewUrl(selectedApplication.cvFilePath)"
                       target="_blank"
                       class="btn btn-outline-primary btn-sm"
+                      :class="{ disabled: !selectedApplication.cvFilePath }"
                     >
                       <i class="bi bi-file-earmark-text me-1"></i>Xem CV
                     </a>
@@ -196,6 +197,7 @@
 import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
 import { getApplicationsHistory, getAllPeriods } from '@/services/companyApplicationService.js'
+import { viewFile } from '@/services/fileService'
 
 const applications = ref([])
 const periods = ref([])
@@ -206,6 +208,11 @@ const filters = ref({
   periodId: '',
   status: '',
 })
+
+const getCvViewUrl = (cvFilePath) => {
+  if (!cvFilePath) return '#'
+  return viewFile(cvFilePath)
+}
 
 // Format date function
 const formatDate = (dateString) => {

@@ -1,5 +1,6 @@
 // src/services/studentEvaluationService.js
 import api from './apiService'
+import { viewEvaluationFile } from './evaluationFileService'
 
 // Lấy báo cáo thực tập của sinh viên
 export const getMyReport = async () => {
@@ -43,4 +44,8 @@ export const getMyEvaluation = async () => {
     console.error('Lỗi lấy đánh giá từ công ty:', err.message)
     throw err
   }
+}
+
+export const getReportFileUrl = (filePath) => {
+  return viewEvaluationFile(filePath)
 }

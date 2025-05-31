@@ -244,6 +244,7 @@
 import { ref, watch } from 'vue'
 import { toast } from 'vue3-toastify'
 import { getMyReport, updateMyReport } from '@/services/studentEvaluationService'
+import { viewEvaluationFile } from '@/services/evaluationFileService'
 
 // Props
 const props = defineProps({
@@ -446,7 +447,7 @@ const formatDateTime = (dateString) => {
 
 // Get file URL
 const getFileUrl = (filePath) => {
-  return `${import.meta.env.VITE_API_BASE_URL}/files/${filePath}`
+  return viewEvaluationFile(filePath)
 }
 
 // Get content length

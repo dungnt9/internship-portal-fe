@@ -65,7 +65,6 @@
       </div>
 
       <div v-if="authStore.isAuthenticated" class="info">
-        <img src="/images/header/bell.svg" alt="bell" class="bell" />
         <div class="dropdown-container">
           <img src="/images/header/user.png" alt="user" class="user" />
           <div class="dropdown-wrapper">

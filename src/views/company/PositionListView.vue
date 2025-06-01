@@ -125,7 +125,6 @@ const getStatusText = (status) => {
             <th>Đã đăng ký</th>
             <th>Hình thức làm việc</th>
             <th>Trạng thái</th>
-            <th>Hạn đăng ký</th>
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -147,7 +146,6 @@ const getStatusText = (status) => {
                 {{ getStatusText(position.status) }}
               </span>
             </td>
-            <td>{{ formatDate(position.dueDate) }}</td>
             <td>
               <button @click="openEditModal(position.id, $event)" class="edit-button">
                 <i class="fas fa-edit"></i> Sửa

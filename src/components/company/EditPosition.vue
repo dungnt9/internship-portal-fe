@@ -101,11 +101,6 @@
                   <option value="CLOSED">Đã đóng</option>
                 </select>
               </div>
-
-              <div class="form-group half-width">
-                <label for="dueDate">Hạn đăng ký <span class="required">*</span></label>
-                <input id="dueDate" v-model="formData.dueDate" type="date" required />
-              </div>
             </div>
 
             <div class="registered-info" v-if="formData.registeredCount > 0">
@@ -161,7 +156,6 @@ const formData = reactive({
   availableSlots: 1,
   workType: '',
   status: 'OPEN',
-  dueDate: '',
   registeredCount: 0,
 })
 
@@ -204,7 +198,6 @@ const fetchPositionDetails = async () => {
         formData.availableSlots = position.availableSlots || 1
         formData.workType = mapWorkTypeToForm(position.workType)
         formData.status = position.status || 'OPEN'
-        formData.dueDate = formatDateForInput(position.dueDate)
         formData.registeredCount = position.registeredCount || 0
       } else {
         error.value = 'Não foi possível encontrar a posição solicitada.'
@@ -259,7 +252,6 @@ const submitForm = async () => {
       availableSlots: formData.availableSlots,
       workType: formData.workType,
       status: formData.status,
-      dueDate: formData.dueDate,
     })
 
     if (response && response.data) {

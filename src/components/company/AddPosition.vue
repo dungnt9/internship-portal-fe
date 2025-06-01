@@ -81,17 +81,6 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="dueDate">Hạn đăng ký <span class="required">*</span></label>
-              <input
-                id="dueDate"
-                v-model="formData.dueDate"
-                type="date"
-                required
-                :min="currentDate"
-              />
-            </div>
-
             <div class="form-actions">
               <button type="button" class="cancel-button" @click="closeModal">Hủy</button>
               <button type="submit" class="submit-button" :disabled="isSubmitting">
@@ -133,7 +122,6 @@ const formData = reactive({
   benefits: '',
   availableSlots: 1,
   workType: '',
-  dueDate: '',
   periodId: '',
 })
 
@@ -163,7 +151,6 @@ const resetForm = () => {
   formData.benefits = ''
   formData.availableSlots = 1
   formData.workType = ''
-  formData.dueDate = ''
 }
 
 const closeModal = () => {

@@ -65,10 +65,6 @@ onMounted(async () => {
           </div>
           <div class="position-info">
             <p><strong>Hình thức:</strong> {{ position.workType }}</p>
-            <p>
-              <strong>Hạn đăng ký:</strong>
-              {{ new Date(position.dueDate).toLocaleDateString('vi-VN') }}
-            </p>
           </div>
         </div>
       </div>

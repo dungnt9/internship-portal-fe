@@ -105,3 +105,19 @@ export const uploadAvatar = async (file) => {
     throw err
   }
 }
+
+export const uploadLogo = async (file) => {
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    return await api.post('/user/upload/logo', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  } catch (err) {
+    console.error('Lỗi upload logo:', err.message)
+    throw err
+  }
+}

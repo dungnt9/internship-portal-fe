@@ -107,6 +107,12 @@ const router = createRouter({
       component: () => import('../views/company/CompanyContact.vue'),
       meta: { layout: 'default', requiresAuth: true },
     },
+    {
+      path: '/my-company-info',
+      name: 'my-company-info',
+      component: () => import('../components/userinfo/Company.vue'),
+      meta: { layout: 'default', requiresAuth: true },
+    },
   ],
 })
 

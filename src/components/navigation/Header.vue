@@ -10,11 +10,7 @@
     </div>
     <div class="menu">
       <div v-if="authStore.isAuthenticated" class="list-category">
-        <div
-          v-if="authStore.role == 'ROLE_STUDENT'"
-          class="dropdown-container"
-          @click="router.push('/dang-ky-thuc-tap')"
-        >
+        <div v-if="authStore.role == 'ROLE_STUDENT'" class="dropdown-container">
           <p class="category">Đăng ký thực tập</p>
           <div class="dropdown-wrapper-1" @click.stop>
             <Dropdown
@@ -28,18 +24,27 @@
             />
           </div>
         </div>
+        <div v-if="authStore.role == 'ROLE_COMPANY'" class="dropdown-container">
+          <p class="category">Thông tin công ty của tôi</p>
+          <div class="dropdown-wrapper-1" @click.stop>
+            <Dropdown
+              :items="[
+                { label: 'Thông tin công ty', route: '/my-company-info' },
+                {
+                  label: 'Quản lý người liên lạc',
+                  route: '/quan-ly-nguoi-lien-lac',
+                },
+                { label: 'Vị trí tuyển dụng', route: '/vi-tri-tuyen-dung' },
+              ]"
+            />
+          </div>
+        </div>
         <router-link
-          v-if="authStore.role === 'ROLE_COMPANY'"
-          to="/quan-ly-nguoi-lien-lac"
+          v-if="authStore.role !== 'ROLE_COMPANY'"
+          to="/danh-sach-doanh-nghiep"
           class="link"
         >
-          <p class="category">Quản lý người liên lạc</p>
-        </router-link>
-        <router-link to="/danh-sach-doanh-nghiep" class="link">
           <p class="category">Danh sách doanh nghiệp</p>
-        </router-link>
-        <router-link v-if="authStore.role === 'ROLE_COMPANY'" to="/vi-tri-tuyen-dung" class="link">
-          <p class="category">Vị trí tuyển dụng</p>
         </router-link>
         <router-link v-if="authStore.role === 'ROLE_COMPANY'" to="/duyet-thuc-tap" class="link">
           <p class="category">Xét duyệt sinh viên thực tập</p>

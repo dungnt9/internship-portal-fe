@@ -122,7 +122,6 @@ const getStatusText = (status) => {
             <th>Công ty</th>
             <th>Mô tả</th>
             <th>Số lượng</th>
-            <th>Đã đăng ký</th>
             <th>Hình thức làm việc</th>
             <th>Trạng thái</th>
             <th>Thao tác</th>
@@ -139,7 +138,6 @@ const getStatusText = (status) => {
             <td>{{ position.companyName }}</td>
             <td class="description-cell">{{ position.description }}</td>
             <td>{{ position.availableSlots }}</td>
-            <td>{{ position.registeredCount }}</td>
             <td>{{ position.workType }}</td>
             <td>
               <span :class="['status-badge', getStatusClass(position.status)]">

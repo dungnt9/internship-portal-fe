@@ -103,14 +103,6 @@
               </div>
             </div>
 
-            <div class="registered-info" v-if="formData.registeredCount > 0">
-              <p>
-                <i class="fas fa-info-circle"></i>
-                Hiện đã có <strong>{{ formData.registeredCount }}</strong> sinh viên đăng ký vị trí
-                này.
-              </p>
-            </div>
-
             <div class="form-actions">
               <button type="button" class="cancel-button" @click="closeModal">Hủy</button>
               <button type="submit" class="submit-button" :disabled="isSubmitting">
@@ -156,7 +148,6 @@ const formData = reactive({
   availableSlots: 1,
   workType: '',
   status: 'OPEN',
-  registeredCount: 0,
 })
 
 watch(
@@ -198,7 +189,6 @@ const fetchPositionDetails = async () => {
         formData.availableSlots = position.availableSlots || 1
         formData.workType = mapWorkTypeToForm(position.workType)
         formData.status = position.status || 'OPEN'
-        formData.registeredCount = position.registeredCount || 0
       } else {
         error.value = 'Não foi possível encontrar a posição solicitada.'
       }

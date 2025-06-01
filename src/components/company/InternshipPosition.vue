@@ -50,8 +50,7 @@ onMounted(async () => {
           <div class="position-details">
             <p class="position-department"><strong>Công ty:</strong> {{ position.companyName }}</p>
             <p class="position-count">
-              <strong>Số lượng:</strong> {{ position.availableSlots }} sinh viên (Đã đăng ký:
-              {{ position.registeredCount }})
+              <strong>Số lượng:</strong> {{ position.availableSlots }} sinh viên
             </p>
           </div>
           <div class="position-description">

@@ -38,6 +38,18 @@ onMounted(async () => {
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)
 }
+
+const getCompanyLogoUrl = (logoPath) => {
+  if (!logoPath) return '/images/company/default_logo.svg'
+  if (logoPath.startsWith('/uploads/')) {
+    return `http://localhost:8002${logoPath}`
+  }
+  return logoPath
+}
+
+const handleImageError = (event) => {
+  event.target.src = '/images/company/default_logo.svg'
+}
 </script>
 
 <template>
@@ -55,15 +67,10 @@ const formatCurrency = (value) => {
       <div class="col-md-3">
         <div class="company-sidebar">
           <div class="logo-container">
-            <!--            <img-->
-            <!--              :src="company.logoPath || '../../assets/default-logo.png'"-->
-            <!--              :alt="company.name"-->
-            <!--              @error="$event.target.src = '../../assets/default-logo.png'"-->
-            <!--              class="company-logo"-->
-            <!--            />-->
             <img
-              :src="company.logoPath || '../../assets/default-logo.png'"
+              :src="getCompanyLogoUrl(company.logoPath)"
               :alt="company.name"
+              @error="handleImageError"
               class="company-logo"
             />
           </div>

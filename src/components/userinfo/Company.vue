@@ -209,40 +209,6 @@
         </div>
       </div>
 
-      <div class="col-md-12"><strong>Thông tin tài chính và nhân sự</strong></div>
-
-      <div class="col-md-6">
-        <div>
-          <p>Lĩnh vực kinh doanh</p>
-          <div class="input-group">
-            <input
-              type="text"
-              v-model="formData.businessType"
-              placeholder="Lĩnh vực kinh doanh"
-              class="input-box"
-              :disabled="editStatus"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div>
-          <p>Năm thành lập</p>
-          <div class="input-group">
-            <input
-              type="number"
-              v-model="formData.foundingYear"
-              placeholder="2020"
-              min="1900"
-              :max="currentYear"
-              class="input-box"
-              :disabled="editStatus"
-            />
-          </div>
-        </div>
-      </div>
-
       <!-- Buttons -->
       <div class="col-md-12">
         <div

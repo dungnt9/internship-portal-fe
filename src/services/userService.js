@@ -121,3 +121,12 @@ export const uploadLogo = async (file) => {
     throw err
   }
 }
+
+export const registerCompany = async (payload) => {
+  try {
+    return await api.post('/user/companies/register', payload)
+  } catch (err) {
+    console.error('Lỗi đăng ký công ty:', err.message)
+    throw err
+  }
+}

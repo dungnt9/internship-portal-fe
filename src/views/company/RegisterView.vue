@@ -39,17 +39,6 @@
             </div>
           </div>
           <div>
-            <p>Tên viết tắt (Nếu có)</p>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="formData.shortName"
-                placeholder="Tên viết tắt"
-                class="input-box"
-              />
-            </div>
-          </div>
-          <div>
             <p>Website Công ty (*)</p>
             <div class="input-group">
               <input
@@ -60,9 +49,6 @@
               />
             </div>
           </div>
-        </div>
-
-        <div class="col-md-6">
           <div v-if="!formData.isForeignCompany">
             <p>Mã số thuế (*)</p>
             <div class="input-group">
@@ -70,6 +56,20 @@
                 type="text"
                 v-model="formData.taxCode"
                 placeholder="Mã số thuế"
+                class="input-box"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div>
+            <p>Tên viết tắt (Nếu có)</p>
+            <div class="input-group">
+              <input
+                type="text"
+                v-model="formData.shortName"
+                placeholder="Tên viết tắt"
                 class="input-box"
               />
             </div>
@@ -106,17 +106,6 @@
               <input type="text" v-model="formData.email" placeholder="Email" class="input-box" />
             </div>
           </div>
-          <div>
-            <p>Điện thoại (*)</p>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="formData.phone"
-                placeholder="Điện thoại"
-                class="input-box"
-              />
-            </div>
-          </div>
         </div>
 
         <div class="col-md-6">
@@ -127,6 +116,17 @@
                 type="text"
                 v-model="formData.position"
                 placeholder="Vị trí tại Công ty"
+                class="input-box"
+              />
+            </div>
+          </div>
+          <div>
+            <p>Điện thoại (*)</p>
+            <div class="input-group">
+              <input
+                type="text"
+                v-model="formData.phone"
+                placeholder="Điện thoại"
                 class="input-box"
               />
             </div>

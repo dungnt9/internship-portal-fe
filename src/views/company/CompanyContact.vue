@@ -32,9 +32,10 @@
       >
         <div class="contact-header">
           <img
-            :src="contact.imagePath || '/images/user/default_avatar.svg'"
+            :src="getAvatarUrl(contact.imagePath)"
             :alt="contact.name"
             class="contact-avatar"
+            @error="handleImageError"
           />
           <div class="contact-info">
             <h3 class="contact-name">{{ contact.name }}</h3>
@@ -192,77 +193,6 @@
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Contact Detail Modal -->
-    <div v-if="showDetailModal" class="modal-overlay" @click="closeModals">
-      <div class="modal-content large" @click.stop>
-        <div class="modal-header">
-          <h3>Chi tiết liên hệ</h3>
-          <button @click="closeModals" class="close-btn">&times;</button>
-        </div>
-
-        <div class="modal-body" v-if="selectedContact">
-          <div class="detail-section">
-            <div class="detail-avatar">
-              <img
-                :src="selectedContact.imagePath || '/images/user/default_avatar.svg'"
-                :alt="selectedContact.name"
-                class="large-avatar"
-              />
-            </div>
-            <div class="detail-info">
-              <h2>{{ selectedContact.name }}</h2>
-              <p class="position">{{ selectedContact.position }}</p>
-              <span class="status" :class="{ active: selectedContact.isActive }">
-                {{ selectedContact.isActive ? 'Hoạt động' : 'Không hoạt động' }}
-              </span>
-            </div>
-          </div>
-
-          <div class="detail-grid">
-            <div class="detail-card">
-              <h4>Thông tin liên hệ</h4>
-              <div class="info-item">
-                <span class="label">Email:</span>
-                <span class="value">{{ selectedContact.email }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Điện thoại:</span>
-                <span class="value">{{ selectedContact.phone }}</span>
-              </div>
-            </div>
-
-            <div class="detail-card">
-              <h4>Thông tin công ty</h4>
-              <div class="info-item">
-                <span class="label">Tên công ty:</span>
-                <span class="value">{{ selectedContact.companyName }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Tên viết tắt:</span>
-                <span class="value">{{ selectedContact.companyShortName }}</span>
-              </div>
-            </div>
-
-            <div class="detail-card">
-              <h4>Thông tin hệ thống</h4>
-              <div class="info-item">
-                <span class="label">ID liên hệ:</span>
-                <span class="value">{{ selectedContact.id }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Ngày tạo:</span>
-                <span class="value">{{ formatDate(selectedContact.createdAt) }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Cập nhật cuối:</span>
-                <span class="value">{{ formatDate(selectedContact.updatedAt) }}</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -514,6 +444,18 @@ const formatDate = (dateString) => {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+const getAvatarUrl = (imagePath) => {
+  if (!imagePath) return '/images/user/default_avatar.svg'
+  if (imagePath.startsWith('/uploads/')) {
+    return `http://localhost:8002${imagePath}`
+  }
+  return imagePath
+}
+
+const handleImageError = (event) => {
+  event.target.src = '/images/user/default_avatar.svg'
 }
 </script>
 

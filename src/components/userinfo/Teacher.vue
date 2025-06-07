@@ -37,6 +37,18 @@
             />
           </div>
         </div>
+        <div>
+          <p>Số điện thoại</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="teacherData.phone"
+              placeholder="Số điện thoại"
+              class="input-box"
+              disabled
+            />
+          </div>
+        </div>
       </div>
 
       <div class="col-md-6">
@@ -51,16 +63,6 @@
               disabled
             />
           </div>
-        </div>
-        <p>Số điện thoại</p>
-        <div class="input-group">
-          <input
-            type="text"
-            v-model="teacherData.phone"
-            placeholder="Số điện thoại"
-            class="input-box"
-            disabled
-          />
         </div>
       </div>
 
@@ -101,7 +103,7 @@
           v-if="editStatus"
           class="col-6 mx-auto d-flex justify-content-center align-items-center"
         >
-          <button type="button" @click="toggleEditMode" class="login-button-1 btn btn-success">
+          <button type="button" @click="toggleEditMode" class="login-button-1 btn btn-danger">
             Chỉnh sửa
           </button>
         </div>

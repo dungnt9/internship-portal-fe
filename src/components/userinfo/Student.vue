@@ -36,6 +36,16 @@
               :disabled="editStatus"
             />
           </div>
+          <p>Số điện thoại</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="studentData.phone"
+              placeholder="Số điện thoại"
+              class="input-box"
+              disabled
+            />
+          </div>
         </div>
       </div>
 
@@ -51,16 +61,6 @@
               disabled
             />
           </div>
-        </div>
-        <p>Số điện thoại</p>
-        <div class="input-group">
-          <input
-            type="text"
-            v-model="studentData.phone"
-            placeholder="Số điện thoại"
-            class="input-box"
-            disabled
-          />
         </div>
       </div>
 

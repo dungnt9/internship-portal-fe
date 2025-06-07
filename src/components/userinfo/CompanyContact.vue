@@ -36,6 +36,16 @@
               :disabled="editStatus"
             />
           </div>
+          <p>Số điện thoại</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="contactData.phone"
+              placeholder="Số điện thoại"
+              class="input-box"
+              disabled
+            />
+          </div>
         </div>
       </div>
 
@@ -52,15 +62,17 @@
             />
           </div>
         </div>
-        <p>Số điện thoại</p>
-        <div class="input-group">
-          <input
-            type="text"
-            v-model="contactData.phone"
-            placeholder="Số điện thoại"
-            class="input-box"
-            disabled
-          />
+        <div>
+          <p>Vị trí</p>
+          <div class="input-group">
+            <input
+              type="text"
+              v-model="formData.position"
+              placeholder="Vị trí"
+              class="input-box"
+              :disabled="editStatus"
+            />
+          </div>
         </div>
       </div>
 
@@ -90,22 +102,6 @@
               placeholder="Website"
               class="input-box"
               disabled
-            />
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-12"><strong>Thông tin chi tiết</strong></div>
-      <div class="col-md-6">
-        <div>
-          <p>Vị trí</p>
-          <div class="input-group">
-            <input
-              type="text"
-              v-model="formData.position"
-              placeholder="Vị trí"
-              class="input-box"
-              :disabled="editStatus"
             />
           </div>
         </div>

@@ -99,7 +99,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { getCurrentPeriod, createPosition } from '@/services/registerService'
+import { getUpcomingPeriod, createPosition } from '@/services/registerService'
 import { useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -132,15 +132,15 @@ const currentDate = computed(() => {
 
 onMounted(async () => {
   try {
-    const response = await getCurrentPeriod()
+    const response = await getUpcomingPeriod()
     if (response && response.data) {
       currentPeriodId.value = response.data.id
       formData.periodId = response.data.id
     } else {
-      console.error('Không thể lấy kỳ thực tập hiện tại')
+      console.error('Không thể lấy kỳ thực tập sắp tới')
     }
   } catch (error) {
-    console.error('Lỗi khi lấy kỳ thực tập hiện tại:', error)
+    console.error('Lỗi khi lấy kỳ thực tập sắp tới:', error)
   }
 })
 

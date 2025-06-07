@@ -287,7 +287,6 @@ const companyData = ref({
   logoPath: '',
   isVerified: false,
   verificationDate: null,
-  rejectionReason: null,
   isLinked: false,
   createdAt: '',
   updatedAt: '',
@@ -537,19 +536,16 @@ const handleCapitalInput = (event) => {
 // Status helper functions
 const getStatusClass = () => {
   if (companyData.value.isVerified) return 'status-verified'
-  if (companyData.value.rejectionReason) return 'status-rejected'
   return 'status-pending'
 }
 
 const getStatusIcon = () => {
   if (companyData.value.isVerified) return '✓'
-  if (companyData.value.rejectionReason) return '✗'
   return '⏳'
 }
 
 const getStatusText = () => {
   if (companyData.value.isVerified) return 'Đã xác thực'
-  if (companyData.value.rejectionReason) return 'Bị từ chối'
   return 'Chờ xác thực'
 }
 </script>

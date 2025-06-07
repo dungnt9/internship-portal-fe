@@ -122,70 +122,6 @@
       </div>
     </div>
 
-    <!-- Statistics Card -->
-    <div class="row mt-4">
-      <div class="col-md-3">
-        <div class="card bg-primary text-white">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <div>
-                <h6 class="card-title">Tổng sinh viên</h6>
-                <h4 class="mb-0">{{ statistics.total }}</h4>
-              </div>
-              <div class="align-self-center">
-                <i class="bi bi-people" style="font-size: 2rem"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-success text-white">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <div>
-                <h6 class="card-title">Đã đánh giá</h6>
-                <h4 class="mb-0">{{ statistics.evaluated }}</h4>
-              </div>
-              <div class="align-self-center">
-                <i class="bi bi-check-circle" style="font-size: 2rem"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-warning text-white">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <div>
-                <h6 class="card-title">Chưa đánh giá</h6>
-                <h4 class="mb-0">{{ statistics.pending }}</h4>
-              </div>
-              <div class="align-self-center">
-                <i class="bi bi-clock" style="font-size: 2rem"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-info text-white">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <div>
-                <h6 class="card-title">Điểm TB</h6>
-                <h4 class="mb-0">{{ statistics.averageScore }}</h4>
-              </div>
-              <div class="align-self-center">
-                <i class="bi bi-graph-up" style="font-size: 2rem"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Evaluation Modal -->
     <Teleport to="body">
       <div
@@ -269,29 +205,6 @@ const filteredInternships = computed(() => {
   }
 
   return filtered
-})
-
-// Computed statistics
-const statistics = computed(() => {
-  const total = filteredInternships.value.length
-  const evaluated = filteredInternships.value.filter(
-    (i) => i.evaluationStatus === 'COMPLETED',
-  ).length
-  const pending = total - evaluated
-
-  const scores = filteredInternships.value.filter((i) => i.score).map((i) => parseFloat(i.score))
-
-  const averageScore =
-    scores.length > 0
-      ? (scores.reduce((sum, score) => sum + score, 0) / scores.length).toFixed(1)
-      : '--'
-
-  return {
-    total,
-    evaluated,
-    pending,
-    averageScore,
-  }
 })
 
 // Format date function

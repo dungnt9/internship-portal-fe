@@ -26,12 +26,42 @@ const fetchPositions = async () => {
   try {
     const response = await getListPosition()
     positions.value = response.data
+    sortPositionsByPeriod()
     loading.value = false
   } catch (err) {
     error.value = 'Không thể tải danh sách vị trí. Vui lòng thử lại sau.'
     loading.value = false
     console.error('Lỗi tải danh sách vị trí:', err)
   }
+}
+
+const sortPositionsByPeriod = () => {
+  positions.value.sort((a, b) => {
+    const periodA = a.periodId || ''
+    const periodB = b.periodId || ''
+
+    // Parse period format like "2024.1" or "2025.2"
+    const parseYear = (period) => {
+      const parts = period.split('.')
+      return parts.length === 2 ? parseInt(parts[0]) : 0
+    }
+
+    const parseSemester = (period) => {
+      const parts = period.split('.')
+      return parts.length === 2 ? parseInt(parts[1]) : 0
+    }
+
+    const yearA = parseYear(periodA)
+    const yearB = parseYear(periodB)
+    const semesterA = parseSemester(periodA)
+    const semesterB = parseSemester(periodB)
+
+    // Sort newest first: 2025.1 -> 2024.2 -> 2024.1
+    if (yearA !== yearB) {
+      return yearB - yearA
+    }
+    return semesterB - semesterA
+  })
 }
 
 const navigateToPositionDetail = (positionId) => {

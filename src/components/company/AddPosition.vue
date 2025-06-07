@@ -1,6 +1,3 @@
-<!--
-  File path: D:\code\datn\internship-portal-fe\src\components\company\AddPosition.vue
--->
 <template>
   <Teleport to="body">
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
@@ -14,6 +11,14 @@
 
         <div class="modal-body">
           <form @submit.prevent="submitForm">
+            <!-- Period ID display at the top -->
+            <div class="period-info">
+              <div class="period-badge">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Kỳ thực tập: {{ currentPeriodId || 'Đang tải...' }}</span>
+              </div>
+            </div>
+
             <div class="form-group">
               <label for="title">Tên vị trí <span class="required">*</span></label>
               <input

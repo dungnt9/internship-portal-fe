@@ -118,6 +118,7 @@ const getStatusText = (status) => {
       <table class="position-table">
         <thead>
           <tr>
+            <th>Kỳ thực tập</th>
             <th>Tên vị trí</th>
             <th>Công ty</th>
             <th>Mô tả</th>
@@ -134,6 +135,7 @@ const getStatusText = (status) => {
             class="position-row"
             @click="navigateToPositionDetail(position.id)"
           >
+            <td class="period-cell">{{ position.periodId }}</td>
             <td>{{ position.title }}</td>
             <td>{{ position.companyName }}</td>
             <td class="description-cell">{{ position.description }}</td>

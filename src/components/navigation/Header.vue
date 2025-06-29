@@ -185,6 +185,11 @@ const handleLogout = () => {
   z-index: 1;
 }
 
+.dropdown {
+  /* max-width: 400px; */
+  margin-left: 28px;
+}
+
 .dropdown-wrapper-1 {
   position: absolute;
   animation: dropdown 0.5s ease forwards;

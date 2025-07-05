@@ -129,7 +129,7 @@ const handleImageError = (event) => {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   border-bottom: 1px solid #eee;
 }
 
